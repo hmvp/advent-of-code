@@ -53,9 +53,14 @@ pub fn compute(program: &[isize], input: &Receiver<isize>, output: &Sender<isize
             }
             3 => {
                 // Input
-                set_result(&mut memory, ip, 1, relative_base, input.recv().unwrap());
+                let input = input.recv();
+                if let Ok(input) = input {
+                    set_result(&mut memory, ip, 1, relative_base, input);
 
-                ip += 2;
+                    ip += 2;
+                } else {
+                    break;
+                }
             }
             4 => {
                 // Output
@@ -86,7 +91,9 @@ pub fn compute(program: &[isize], input: &Receiver<isize>, output: &Sender<isize
                 ip += 4;
             }
             9 => {
-                relative_base += get_argument(&mut memory, ip, 1, relative_base) as usize;
+                relative_base = (relative_base as isize
+                    + get_argument(&mut memory, ip, 1, relative_base))
+                    as usize;
                 ip += 2;
             }
             99 => return,

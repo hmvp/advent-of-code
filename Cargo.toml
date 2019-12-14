@@ -16,6 +16,9 @@ permutohedron = "0.2.4"
 crossbeam-channel = "0.4"
 crossbeam-utils = "0.7.0"
 bytecount = "0.6.0"
+gcd = "1.2.0"
+nom = "5.0.1"
 
 [profile.release]
 debug = true
+lto = true
