@@ -156,7 +156,7 @@ pub fn part2(input: &[HashMap<Field, String>]) -> i32 {
         let result: IResult<&str, &str> = preceded(tag("#"), take_while_m_n(6, 6, is_hex_digit))(
             p.get(&Field::HCL).unwrap().as_str(),
         );
-        if result.ok().map_or(true, |(rest, value)| rest != "") {
+        if result.ok().map_or(true, |(rest, _)| rest != "") {
             continue 'outer;
         }
         // ecl (Eye Color) - exactly one of: amb blu brn gry grn hzl oth.
