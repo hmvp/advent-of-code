@@ -32,7 +32,6 @@ pub fn part1(input: &[usize]) -> usize {
 //     permutations.insert(vec![0]);
 
 //     for i in input {
-//         dbg!(i);
 //         let mut new_perms = HashSet::new();
 //         for p in permutations.drain() {
 //             if p.len()> 1 && p[1] + 3 >= *i {

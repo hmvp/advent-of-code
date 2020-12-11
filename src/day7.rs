@@ -59,7 +59,7 @@ fn bags_in_color(input: &HashMap<String, HashMap<String, usize>>, color: &str) -
     let mut number = 1;
     let set = input.get(color).unwrap();
     for (bag_color, n) in set {
-        number += dbg!(n) * dbg!(bags_in_color(input, dbg!(bag_color)))
+        number += n * bags_in_color(input, bag_color)
     }
     number
 }
