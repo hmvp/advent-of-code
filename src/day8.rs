@@ -144,7 +144,7 @@ mod tests {
     #[test]
     fn check_part1() {
         assert_eq!(
-            part1(&vec![
+            part1(&[
                 Op::Nop(0),
                 Op::Acc(1),
                 Op::Jmp(4),

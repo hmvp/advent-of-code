@@ -19,7 +19,7 @@ fn find_outlier(input: &[usize], window_size: usize) -> usize {
                     }
                 }
             }
-            return true;
+            true
         })
         .map(|window| window[window_size])
         .unwrap()
