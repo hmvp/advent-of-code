@@ -1,3 +1,5 @@
+#![allow(clippy::many_single_char_names)]
+
 use aoc_runner_derive::{aoc, aoc_generator};
 
 #[aoc_generator(day13)]
