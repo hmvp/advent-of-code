@@ -8,6 +8,7 @@ dependencies = [
  "aoc-runner-derive",
  "itertools",
  "nom",
+ "nom-supreme",
  "strum",
 ]
 
@@ -65,6 +66,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "cascade"
+version = "1.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f18c6a921baae2d947e4cf96f6ef1b5774b3056ae8edbdf5c5cfce4f33260921"
+
+[[package]]
 name = "cfg-if"
 version = "0.1.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -92,6 +99,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "indent_write"
+version = "2.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "80406a495a19a297b9d2331969027e6e670534ccd2fe541da3c0e53b6a96ffc7"
+
+[[package]]
 name = "itertools"
 version = "0.9.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -105,6 +118,12 @@ name = "itoa"
 version = "0.4.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "dc6f3ad7b9d11a0c00842ff8de1b60ee58661048eb8049ed33c73594f359d7e6"
+
+[[package]]
+name = "joinery"
+version = "2.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "85a5c968b1e8336a945da21fab473045df2d5f8c81535e762d52f6b2c49477b9"
 
 [[package]]
 name = "lexical-core"
@@ -135,6 +154,19 @@ dependencies = [
  "lexical-core",
  "memchr",
  "version_check",
+]
+
+[[package]]
+name = "nom-supreme"
+version = "0.4.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a47ef0b20ac9d84024b2863bf56db4f606fea911690caa436d214d9379d1c3bc"
+dependencies = [
+ "cascade",
+ "indent_write",
+ "joinery",
+ "memchr",
+ "nom",
 ]
 
 [[package]]
