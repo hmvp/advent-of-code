@@ -1,0 +1,8 @@
+[package]
+name = "year-2023-day-01"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+aoclib = "0.2.1"
+nom = "7.1.3"
