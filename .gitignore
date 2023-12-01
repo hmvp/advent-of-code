@@ -1,1 +1,7 @@
-answer
+**/data/actual/1/answer
+**/data/actual/2/answer
+target/
+!**/data/target/
+Cargo.lock
+/.session
+**/[1-2]/out/
