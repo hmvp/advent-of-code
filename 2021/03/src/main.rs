@@ -12,18 +12,18 @@ fn part_1(input: Input) -> impl ToString {
     let mut counts = vec![0u32; dl as usize];
     for n in input {
         for (index, d) in n.iter().enumerate() {
-            counts[index] += *d as u32
+            counts[index] += u32::from(*d);
         }
     }
 
     let gamma: u32 = counts.iter().fold(0, |mut acc, d| {
-        acc += if *d as usize > l / 2 { 1 } else { 0 };
+        acc += u32::from(*d as usize > l / 2);
         acc <<= 1;
         acc
     }) >> 1;
     let epsilon = !gamma & (2u32.pow(dl) - 1);
     assert_eq!(gamma & epsilon, 0);
-    println!("{:b} {:b} {:?} {:?}", gamma, epsilon, gamma, epsilon,);
+    println!("{gamma:b} {epsilon:b} {gamma:?} {epsilon:?}",);
 
     gamma * epsilon
 }
@@ -33,10 +33,10 @@ fn part_2(input: Input) -> impl ToString {
     .lines()
     .map(|l| l.chars().map(|c| c.to_digit(10).unwrap() as u8).collect())
     .collect();
-    let oxygen = calc(&input, false) as u32;
-    let co2 = calc(&input, true) as u32;
+    let oxygen = u32::from(calc(&input, false));
+    let co2 = u32::from(calc(&input, true));
 
-    println!("{:b} {:b} {:?} {:?}", oxygen, co2, oxygen, co2);
+    println!("{oxygen:b} {co2:b} {oxygen:?} {co2:?}");
     oxygen * co2
 }
 
@@ -45,14 +45,12 @@ fn part_2(input: Input) -> impl ToString {
 fn filter_rec(mut input: Vec<Vec<u8>>, index: usize, co2: bool) -> Vec<Vec<u8>> {
     let l = input.len() as f32;
     let mut count = 0;
-    for n in input.iter() {
-        count += n[index] as u32
+    for n in &input {
+        count += u32::from(n[index]);
     }
     let test = if count as f32 >= l / 2f32 {
-        if co2 {0} else {1}
-    } else {
-        if co2 {1} else {0}
-    };
+        u8::from(!co2)
+    } else { u8::from(co2) };
 
     // println!("{:?} {:?} {:?} {:?}", count, test, l, count as f32 >= l / 2f32);
     // if co2 {

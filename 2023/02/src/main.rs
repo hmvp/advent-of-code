@@ -46,7 +46,8 @@ impl CubeSet {
             blue,
         }
     }
-
+    
+    #[allow(clippy::needless_pass_by_value)]
     fn update(mut self, other: Self) -> Self {
         self.red += other.red;
         self.green += other.green;
@@ -73,13 +74,13 @@ impl Game {
             .iter()
             .fold(CubeSet::new(), |mut acc, cube_set| {
                 if acc.red < cube_set.red {
-                    acc.red = cube_set.red
+                    acc.red = cube_set.red;
                 }
                 if acc.green < cube_set.green {
-                    acc.green = cube_set.green
+                    acc.green = cube_set.green;
                 }
                 if acc.blue < cube_set.blue {
-                    acc.blue = cube_set.blue
+                    acc.blue = cube_set.blue;
                 }
                 acc
             })
@@ -88,7 +89,7 @@ impl Game {
     fn fit(&self, other: &CubeSet) -> bool {
         self.cube_sets.iter().fold(
             true,
-            |acc, set| if set.fit(other) { acc && true } else { false },
+            |acc, set| if set.fit(other) { acc } else { false },
         )
     }
 }

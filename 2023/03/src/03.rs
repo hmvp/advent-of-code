@@ -80,7 +80,7 @@ impl Schematic {
             let mut close_numbers = Vec::new();
             for number in &numbers {
                 if symbol.is_close(number) {
-                    close_numbers.push(number.unwrap_nr())
+                    close_numbers.push(number.unwrap_nr());
                 }
             }
             if close_numbers.len() == 2 {
@@ -103,14 +103,14 @@ fn parse(input: Input) -> Schematic {
                     //     etype: EntryType::None,
                     //     positions: vec![Position::new(column, row)],
                     // });
-                    is_number_in_progress = false
+                    is_number_in_progress = false;
                 }
                 (c, _) if !c.is_numeric() => {
                     schematic.entries.push(Entry {
                         etype: EntryType::Symbol(c),
                         positions: vec![Position::new(column, row)],
                     });
-                    is_number_in_progress = false
+                    is_number_in_progress = false;
                 }
                 (c, false) if c.is_numeric() => {
                     schematic.entries.push(Entry {
@@ -127,7 +127,7 @@ fn parse(input: Input) -> Schematic {
                             positions,
                         } => {
                             *n = *n * 10 + c.to_digit(10).unwrap();
-                            positions.push(Position::new(column, row))
+                            positions.push(Position::new(column, row));
                         }
                         _ => unreachable!(),
                     }
