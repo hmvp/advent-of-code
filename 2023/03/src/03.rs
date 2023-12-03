@@ -61,7 +61,7 @@ impl Schematic {
 
     fn part_number_sum(self) -> u32 {
 
-        let (mut numbers, symbols) = self.entries.iter().partition::<Vec<_>,_>(|item|match item.etype {EntryType::Number(_)=> true, _=>false});
+        let (mut numbers, symbols) = self.entries.iter().partition::<Vec<_>,_>(|item|matches!(item.etype, EntryType::Number(_)));
 
         numbers.drain(..).filter(|number|{
             for symbol in &symbols {
@@ -74,7 +74,7 @@ impl Schematic {
     }
 
     fn gear_sum(self)->u32 {
-        let (numbers, mut symbols) = self.entries.iter().partition::<Vec<_>,_>(|item|match item.etype {EntryType::Number(_)=> true, _=>false});
+        let (numbers, mut symbols) = self.entries.iter().partition::<Vec<_>,_>(|item|matches!(item.etype, EntryType::Number(_)));
 
         symbols.drain(..).filter(|symbol|if let EntryType::Symbol(c) = symbol.etype { c == '*'} else {false}).map(|symbol|{
             let mut close_numbers = Vec::new();

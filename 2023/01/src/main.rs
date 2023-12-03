@@ -2,7 +2,7 @@ use aoc::Input;
 use nom::branch::alt;
 use nom::bytes::complete::{tag, take};
 use nom::character::complete::{alpha1, digit1};
-use nom::combinator::{map, value, map_parser};
+use nom::combinator::{map, map_parser, value};
 use nom::multi::many1;
 use nom::IResult;
 
@@ -57,16 +57,13 @@ fn last_number_parser(i: &str) -> IResult<&str, Vec<Option<usize>>> {
 
 fn part_2(input: Input) -> impl ToString {
     input.lines().fold(0, |acc, item| {
-        let first_number: Vec<usize> = dbg!(first_number_parser(item).unwrap()
+        let first_number: Vec<usize> = dbg!(first_number_parser(item).unwrap().1.drain(..).flatten().collect());
+        let last_number: Vec<usize> = dbg!(last_number_parser(&item.chars().rev().collect::<String>())
+            .unwrap()
             .1
             .drain(..)
-            .filter_map(|x| x)
+            .flatten()
             .collect());
-        let last_number: Vec<usize> = dbg!(last_number_parser(&item.chars().rev().collect::<String>()).unwrap()
-        .1
-        .drain(..)
-        .filter_map(|x| x)
-        .collect());
         acc + dbg!(first_number.first().unwrap()) * 10 + dbg!(last_number.first().unwrap())
     })
 }

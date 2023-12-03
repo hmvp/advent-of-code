@@ -50,9 +50,9 @@ impl FromStr for Action {
         let mut parts = s.split_ascii_whitespace().rev();
         let distance = parts.next().unwrap().parse()?;
         Ok(match parts.next() {
-            Some(s) if s == "up" => Action::Up(distance),
-            Some(s) if s == "down" => Action::Down(distance),
-            Some(s) if s == "forward" => Action::Forward(distance),
+            Some("up") => Action::Up(distance),
+            Some("down") => Action::Down(distance),
+            Some("forward") => Action::Forward(distance),
             _ => panic!(),
         })
     }
