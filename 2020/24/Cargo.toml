@@ -1,0 +1,13 @@
+[package]
+name = "y2020d24"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "y2020d24"
+path = "src/24.rs"
+
+[dependencies]
+aoclib = "0.2.1"
+nom = "6.0.1"
+nom-supreme = "0.4.1"
