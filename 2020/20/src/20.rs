@@ -78,17 +78,48 @@ fn part_1(input: aoc::Input) -> impl ToString {
     .iter()
     .batching(|it| {
         if let Some(start) = it.next() {
-            dbg!(Some((start, it.take_while(|i| *i == start).count())))
+            dbg!(Some((start, (it.take_while_ref(|i| *i == start).count() + 1) / 2)))
+        // corners should appear 2 times (*2 because flips) (+1 for prev lines next)
         } else {
             None
         }
     })
-    .filter_map(|(id, count)| if count >= 2 { Some(id) } else { None })
+    .filter_map(|(id, count)| if count == 2 { Some(id) } else { None })
     .product::<usize>()
 }
 
 fn part_2(input: aoc::Input) -> impl ToString {
-    let _input = &input_generator(input.raw());
+    let input = &input_generator(input.raw());
+
+    let mut map = HashMap::new();
+
+    let sides = input.iter().map(|i| (i, i.sides()));
+
+    for (i, sides) in sides {
+        assert_eq!(sides.len(), 4);
+        for mut s in sides {
+            map.entry(s.clone()).or_insert(vec![]).push(i);
+            s.reverse();
+            map.entry(s).or_insert(vec![]).push(i);
+        }
+    }
+
+    let _first_corner = map
+        .iter()
+        .filter_map(|(_key, value)| if value.len() == 1 { Some(value[0].id) } else { None })
+        .sorted()
+        .collect_vec()
+        .iter()
+        .batching(|it| {
+            if let Some(start) = it.next() {
+                dbg!(Some((start, (it.take_while_ref(|i| *i == start).count() + 1) / 2)))
+            // corners should appear 2 times (*2 because flips) (+1 for prev lines next)
+            } else {
+                None
+            }
+        })
+        .find_map(|(id, count)| if count == 2 { Some(id) } else { None })
+        .unwrap();
 
     0
 }
