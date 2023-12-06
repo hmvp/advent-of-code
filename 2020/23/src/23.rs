@@ -1,94 +1,80 @@
-use std::iter::repeat_with;
-
 aoc::parts!(1, 2);
 
-fn digits(n: usize, base: usize) -> Vec<usize> {
-    let mut n = n;
-    let mut digits = repeat_with(|| {
-        let m = n;
-        n /= base;
-        m
-    })
-    .take_while(|&n| n > 0)
-    .map(|n| n % base)
-    .collect::<Vec<_>>();
-    digits.reverse();
-    digits
+pub fn parse_input(input: aoc::Input) -> Vec<usize> {
+    input.raw().chars().map(|c| c.to_digit(10).unwrap() as usize).collect()
 }
 
-pub fn input_generator(input: &str) -> Vec<usize> {
-    digits(input.parse().unwrap(), 10)
-}
+fn moves(mut current_cup: usize, mut cups: Vec<usize>, nr_of_moves: usize) -> Vec<usize> {
+    for _ in 0..nr_of_moves {
+        // Take out cups
+        let taken_out = [
+            cups[current_cup],
+            cups[cups[current_cup]],
+            cups[cups[cups[current_cup]]]
+        ];
+        cups[current_cup] = cups[cups[cups[cups[current_cup]]]];
 
-fn find_lower_index(input: &[usize], current: usize) -> usize {
-    let mut n = current - 1;
-    for _ in 0..input.len() {
-        if n == 0 {
-            n = *input.iter().max().unwrap();
+        // Select destination
+        let mut destination_cup = current_cup.checked_sub(1).unwrap_or(cups.len() - 1);
+        while taken_out.contains(&destination_cup) {
+            destination_cup = destination_cup.checked_sub(1).unwrap_or(cups.len() - 1);
         }
 
-        let pos = input.iter().position(|i| *i == n);
+        // Return cups
+        cups[taken_out[2]] = cups[destination_cup];
+        cups[destination_cup] = taken_out[0];
 
-        if let Some(pos) = pos {
-            n = pos;
-            break;
-        }
-
-        n -= 1;
+        // Select new current cup
+        current_cup = cups[current_cup];
     }
-    n
+
+    cups
 }
+
 
 fn part_1(input: aoc::Input) -> impl ToString {
-    let input = input_generator(input.raw());
+    let mut input = parse_input(input);
 
-    let mut cups = input;
-    let mut park = cups.clone();
+    let mut cups = vec![999_999_999; 9];
+    input.push(*input.first().unwrap());
 
-    for _ in 0..100 {
-        let mut removed = [0, 0, 0];
-        removed.swap_with_slice(&mut cups[1..4]);
-        let one_lower_index = find_lower_index(&cups, cups[0]);
-        cups[4..=one_lower_index].swap_with_slice(&mut park[0..one_lower_index - 3]);
-        removed.swap_with_slice(&mut cups[one_lower_index - 2..=one_lower_index]);
-        park[0..one_lower_index - 3].swap_with_slice(&mut cups[1..one_lower_index - 2]);
-
-        cups.rotate_left(1);
+    for n in input.windows(2) {
+        cups[n[0] - 1] = n[1] - 1;
     }
-    let pos_1 = cups.iter().position(|i| *i == 1).unwrap();
-    cups.rotate_left(pos_1);
-    cups.iter().skip(1).fold(1, |acc, i| acc * 10 + i)
+
+    let cups: Vec<usize> = moves(*input.first().unwrap() - 1, cups, 100);
+    [
+        (cups[0] + 1),
+        (cups[cups[0]] + 1),
+        (cups[cups[cups[0]]] + 1),
+        (cups[cups[cups[cups[0]]]] + 1),
+        (cups[cups[cups[cups[cups[0]]]]] + 1),
+        (cups[cups[cups[cups[cups[cups[0]]]]]] + 1),
+        (cups[cups[cups[cups[cups[cups[cups[0]]]]]]] + 1),
+        (cups[cups[cups[cups[cups[cups[cups[cups[0]]]]]]]] + 1),
+        (cups[cups[cups[cups[cups[cups[cups[cups[cups[0]]]]]]]]] + 1),
+    ]
+    .iter()
+    .take(8)
+    .fold(0, |acc, i| acc * 10 + i)
 }
+
+const NR_CUPS: usize = 1_000_000;
 
 fn part_2(input: aoc::Input) -> impl ToString {
-    let input = input_generator(input.raw());
+    let mut input = parse_input(input);
 
     let max = *input.iter().max().unwrap();
-    let mut cups = input;
-    cups.extend(max..1_000_000);
-    let mut park = cups.clone();
+    input.extend((max + 1)..=NR_CUPS);
 
-    for _ in 0..10_000_000 {
-        let mut removed = [0, 0, 0];
-        removed.swap_with_slice(&mut cups[1..4]);
-        let one_lower_index = find_lower_index(&cups, cups[0]);
-        cups[4..=one_lower_index].swap_with_slice(&mut park[0..one_lower_index - 3]);
-        removed.swap_with_slice(&mut cups[one_lower_index - 2..=one_lower_index]);
-        park[0..one_lower_index - 3].swap_with_slice(&mut cups[1..one_lower_index - 2]);
+    let mut cups = vec![999_999_999; NR_CUPS];
+    input.push(*input.first().unwrap());
 
-        cups.rotate_left(1);
+    for n in input.windows(2) {
+        cups[n[0] - 1] = n[1] - 1;
     }
-    let pos_1 = cups.iter().position(|i| *i == 1).unwrap();
-    cups[pos_1 + 1] * cups[pos_1 + 2]
-}
 
-#[cfg(test)]
-mod tests {
-    use super::*;
+    let cups: Vec<usize> = moves(*input.first().unwrap() - 1, cups, 10_000_000);
 
-    #[test]
-
-    fn check_find_lower_index() {
-        assert_eq!(find_lower_index(&[1, 0, 0, 0, 9, 2, 5, 8, 4,], 1), 4);
-    }
+    (cups[0] + 1) * (cups[cups[0]] + 1)
 }
