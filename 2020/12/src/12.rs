@@ -1,8 +1,10 @@
+#![allow(clippy::cast_possible_wrap)]
+#![allow(clippy::items_after_statements)]
+
 use std::num::ParseIntError;
 use std::str::FromStr;
 
 aoc::parts!(1, 2);
-
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum Instruction {
@@ -116,8 +118,6 @@ fn part_1(input: aoc::Input) -> impl ToString {
         .manhattan_distance()
 }
 
-
-
 #[derive(Debug)]
 struct Ship2 {
     loc_x: isize,
@@ -172,7 +172,7 @@ impl Ship2 {
             },
             Forward(n) => {
                 self.loc_x += *n as isize * self.waypoint_x;
-                self.loc_y += *n as isize * self.waypoint_y
+                self.loc_y += *n as isize * self.waypoint_y;
             }
         }
     }

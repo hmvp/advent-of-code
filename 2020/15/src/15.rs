@@ -1,5 +1,4 @@
 use std::collections::HashMap;
-use std::iter::FromIterator;
 
 aoc::parts!(1, 2);
 
@@ -8,8 +7,11 @@ pub fn input_generator(input: &str) -> Vec<usize> {
 }
 
 fn calc(input: &[usize], nth: usize) -> usize {
-    let mut ages: HashMap<usize, usize> =
-        HashMap::from_iter(input[..input.len() - 1].iter().enumerate().map(|(n, i)| (*i, n)));
+    let mut ages: HashMap<usize, usize> = input[..input.len() - 1]
+        .iter()
+        .enumerate()
+        .map(|(n, i)| (*i, n))
+        .collect();
     let mut last_spoken_index = input.len() - 1;
     let mut last_spoken = *input.last().unwrap();
     while last_spoken_index < nth - 1 {
@@ -33,7 +35,7 @@ fn part_1(input: aoc::Input) -> impl ToString {
 
 fn part_2(input: aoc::Input) -> impl ToString {
     let input = &input_generator(input.raw());
-    calc(input, 30000000)
+    calc(input, 30_000_000)
 }
 
 #[cfg(test)]

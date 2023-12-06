@@ -1,9 +1,7 @@
 use itertools::Itertools;
 use std::collections::HashMap;
 
-
 aoc::parts!(1, 2);
-
 
 #[derive(Debug, PartialEq)]
 pub struct Image {
@@ -13,15 +11,15 @@ pub struct Image {
 
 impl Image {
     fn sides(&self) -> Vec<Vec<bool>> {
-        let mut sides = self
-            .grid
-            .iter()
-            .map(|row| (row[0], *row.last().unwrap()))
-            .fold(vec![vec![], vec![]], |mut acc, r| {
-                acc[0].push(r.0);
-                acc[1].push(r.1);
-                acc
-            });
+        let mut sides =
+            self.grid
+                .iter()
+                .map(|row| (row[0], *row.last().unwrap()))
+                .fold(vec![vec![], vec![]], |mut acc, r| {
+                    acc[0].push(r.0);
+                    acc[1].push(r.1);
+                    acc
+                });
         sides.push(self.grid[0].clone());
         sides.push(self.grid.last().unwrap().clone());
         sides
@@ -44,9 +42,7 @@ pub fn input_generator(input: &str) -> Vec<Image> {
                 .unwrap()
                 .parse()
                 .unwrap();
-            let grid = lines
-                .map(|l| l.chars().map(|c| c == '#').collect_vec())
-                .collect();
+            let grid = lines.map(|l| l.chars().map(|c| c == '#').collect_vec()).collect();
             Image { id, grid }
         })
         .collect()
@@ -68,7 +64,8 @@ fn part_1(input: aoc::Input) -> impl ToString {
         }
     }
 
-    dbg!(map.iter()
+    dbg!(map
+        .iter()
         .filter_map(|(_key, value)| {
             if value.len() == 1 {
                 Some(value[0].id)
@@ -76,21 +73,22 @@ fn part_1(input: aoc::Input) -> impl ToString {
                 None
             }
         })
-        .sorted().collect_vec()).iter()
-        .batching(|it| {
-            if let Some(start) = it.next() {
-                dbg!(Some((start, it.take_while(|i| *i == start).count())))
-            } else {
-                None
-            }
-        })
-        .filter_map(|(id, count)| if count >= 2 { Some(id) } else { None })
-        .product::<usize>()
+        .sorted()
+        .collect_vec())
+    .iter()
+    .batching(|it| {
+        if let Some(start) = it.next() {
+            dbg!(Some((start, it.take_while(|i| *i == start).count())))
+        } else {
+            None
+        }
+    })
+    .filter_map(|(id, count)| if count >= 2 { Some(id) } else { None })
+    .product::<usize>()
 }
 
-
 fn part_2(input: aoc::Input) -> impl ToString {
-    let input = &input_generator(input.raw());
+    let _input = &input_generator(input.raw());
 
     0
 }
@@ -212,9 +210,7 @@ Tile 3079:
     #[test]
     fn check_input_generator() {
         assert_eq!(
-            &input_generator(
-              INPUT
-            )[0..1],
+            &input_generator(INPUT)[0..1],
             &[Image {
                 id: 2311,
                 grid: vec![

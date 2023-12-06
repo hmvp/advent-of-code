@@ -5,3 +5,8 @@ resolver = "2"
 
 [workspace.lints.clippy]
 pedantic = "warn"
+must_use_candidate = "allow"
+return_self_not_must_use = "allow"
+cast_sign_loss = "allow"
+missing_panics_doc = "allow"
+enum_glob_use = "allow"

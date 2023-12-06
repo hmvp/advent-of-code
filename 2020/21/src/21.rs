@@ -31,7 +31,7 @@ fn part_1(input: aoc::Input) -> impl ToString {
 
     for (ingredients, allergens) in input {
         for allergen in allergens {
-            allergen_map.entry(allergen).or_default().push(ingredients)
+            allergen_map.entry(allergen).or_default().push(ingredients);
         }
     }
 
@@ -65,7 +65,7 @@ fn part_1(input: aoc::Input) -> impl ToString {
 }
 
 fn part_2(input: aoc::Input) -> impl ToString {
-    let input = &input_generator(input.raw());
+    let _input = &input_generator(input.raw());
 
     // "dairy": "lmzg",
     // "fish": "cxk",

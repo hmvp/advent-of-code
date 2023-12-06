@@ -10,7 +10,6 @@ pub fn input_generator(input: aoc::Input) -> Vec<usize> {
     input
 }
 
-
 fn part_1(input: aoc::Input) -> impl ToString {
     let input = &input_generator(input);
 
@@ -27,7 +26,6 @@ fn part_1(input: aoc::Input) -> impl ToString {
     }
     one_jolt * three_jolt
 }
-
 
 // #[aoc(day10, part2)]
 // pub fn part2(input: &[usize]) -> usize {
@@ -61,7 +59,7 @@ fn permutations(input: &[usize]) -> usize {
     let mut permutations = HashSet::new();
     permutations.insert(vec![input[0]]);
 
-    for i in input[1..].iter() {
+    for i in &input[1..] {
         let mut new_perms = HashSet::new();
         for p in permutations.drain() {
             if p.len() > 1 && p[1] + 3 >= *i {
@@ -84,7 +82,6 @@ fn permutations(input: &[usize]) -> usize {
     permutations.len()
 }
 
-
 fn part_2(input: aoc::Input) -> impl ToString {
     let input = &input_generator(input);
 
@@ -93,11 +90,10 @@ fn part_2(input: aoc::Input) -> impl ToString {
     let mut start = 0;
     for index in 0..input.len() {
         if index + 1 < input.len() && input[index] + 3 == input[index + 1] {
-            parts.push(&input[start..index + 1]);
+            parts.push(&input[start..=index]);
             start = index + 1;
         }
     }
-    parts.push(&input[start-1..input.len()-1]);
+    parts.push(&input[start - 1..input.len() - 1]);
     parts.drain(0..parts.len()).map(permutations).product::<usize>()
 }
-

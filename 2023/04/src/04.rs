@@ -56,8 +56,6 @@ fn part_1(input: aoc::Input) -> impl ToString {
     parse_input(input).iter().map(Card::points).sum::<u32>()
 }
 
-
-
 fn process_list(list: &[u32]) -> u32 {
     let mut cards: Vec<u32> = std::iter::repeat(1u32).take(list.len()).collect();
 

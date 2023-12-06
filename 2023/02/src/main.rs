@@ -24,29 +24,17 @@ impl CubeSet {
     }
 
     fn red(red: usize) -> Self {
-        CubeSet {
-            red,
-            green: 0,
-            blue: 0,
-        }
+        CubeSet { red, green: 0, blue: 0 }
     }
 
     fn green(green: usize) -> Self {
-        CubeSet {
-            red: 0,
-            green,
-            blue: 0,
-        }
+        CubeSet { red: 0, green, blue: 0 }
     }
 
     fn blue(blue: usize) -> Self {
-        CubeSet {
-            red: 0,
-            green: 0,
-            blue,
-        }
+        CubeSet { red: 0, green: 0, blue }
     }
-    
+
     #[allow(clippy::needless_pass_by_value)]
     fn update(mut self, other: Self) -> Self {
         self.red += other.red;
@@ -70,27 +58,24 @@ struct Game {
 
 impl Game {
     fn max_counts(&self) -> CubeSet {
-        self.cube_sets
-            .iter()
-            .fold(CubeSet::new(), |mut acc, cube_set| {
-                if acc.red < cube_set.red {
-                    acc.red = cube_set.red;
-                }
-                if acc.green < cube_set.green {
-                    acc.green = cube_set.green;
-                }
-                if acc.blue < cube_set.blue {
-                    acc.blue = cube_set.blue;
-                }
-                acc
-            })
+        self.cube_sets.iter().fold(CubeSet::new(), |mut acc, cube_set| {
+            if acc.red < cube_set.red {
+                acc.red = cube_set.red;
+            }
+            if acc.green < cube_set.green {
+                acc.green = cube_set.green;
+            }
+            if acc.blue < cube_set.blue {
+                acc.blue = cube_set.blue;
+            }
+            acc
+        })
     }
 
     fn fit(&self, other: &CubeSet) -> bool {
-        self.cube_sets.iter().fold(
-            true,
-            |acc, set| if set.fit(other) { acc } else { false },
-        )
+        self.cube_sets
+            .iter()
+            .fold(true, |acc, set| if set.fit(other) { acc } else { false })
     }
 }
 
@@ -131,16 +116,16 @@ fn part_1(input: Input) -> impl ToString {
         blue: 14,
     };
 
-    parse_input(input)
-        .drain(..)
-        .enumerate()
-        .fold(0, |acc, (index, game)| {
+    parse_input(input).drain(..).enumerate().fold(
+        0,
+        |acc, (index, game)| {
             if game.fit(&start) {
                 acc + 1 + index
             } else {
                 acc
             }
-        })
+        },
+    )
 }
 
 fn part_2(input: Input) -> impl ToString {

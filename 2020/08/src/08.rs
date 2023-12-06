@@ -2,9 +2,7 @@ use std::collections::HashSet;
 use std::num::ParseIntError;
 use std::str::FromStr;
 
-
 aoc::parts!(1, 2);
-
 
 #[derive(Debug, Clone, Copy, Hash, PartialEq, Eq)]
 pub enum Op {
@@ -44,9 +42,9 @@ impl Op {
             Op::Nop(_) => *pc += 1,
             Op::Jmp(nr) => {
                 if nr >= 0 {
-                    *pc += nr as usize
+                    *pc += nr as usize;
                 } else {
-                    *pc -= -nr as usize
+                    *pc -= -nr as usize;
                 }
             }
         }
@@ -83,8 +81,6 @@ fn run(input: &[Op]) -> Result<isize, isize> {
     }
 }
 
-
-
 fn part_1(input: aoc::Input) -> impl ToString {
     let input = &input_generator(input);
 
@@ -95,20 +91,20 @@ fn part_2(input: aoc::Input) -> impl ToString {
     let input = &input_generator(input);
 
     let good_input = input
-    .iter()
-    .scan((input, 0), |(input, index), op| {
-        *index += 1;
-        if let Op::Acc(_) = op {
-            Some(vec![])
-        } else {
-            let mut result = vec![input.to_vec(), input.to_vec()];
-            result[0][*index - 1].swap();
-            Some(result)
-        }
-    })
-    .flatten()
-    .find(|input| run(input).is_ok())
-    .unwrap();
+        .iter()
+        .scan((input, 0), |(input, index), op| {
+            *index += 1;
+            if let Op::Acc(_) = op {
+                Some(vec![])
+            } else {
+                let mut result = vec![(*input).clone(), (*input).clone()];
+                result[0][*index - 1].swap();
+                Some(result)
+            }
+        })
+        .flatten()
+        .find(|input| run(input).is_ok())
+        .unwrap();
 
-run(&good_input).unwrap()
+    run(&good_input).unwrap()
 }

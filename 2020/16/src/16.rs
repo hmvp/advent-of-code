@@ -1,3 +1,5 @@
+#![allow(clippy::similar_names)]
+
 use std::collections::HashMap;
 use std::ops::Range;
 
@@ -141,7 +143,7 @@ fn find_valid_field_order(input: &Input) -> Vec<&String> {
     let mut valid_order: Vec<Option<&String>> = Vec::new();
     valid_order.resize_with(input.ticket.len(), || None);
     for (index, mut o) in valid_constraints {
-        valid_order[index] = Some(o.drain(..).find(|key| !valid_order.contains(&Some(key))).unwrap())
+        valid_order[index] = Some(o.drain(..).find(|key| !valid_order.contains(&Some(key))).unwrap());
     }
     valid_order.drain(..).flatten().collect()
 }

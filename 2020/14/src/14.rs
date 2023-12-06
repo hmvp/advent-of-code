@@ -57,9 +57,9 @@ fn apply_mask(mask: &Option<Vec<Option<bool>>>, mut n: usize) -> usize {
         for (index, bit) in mask.iter().rev().enumerate() {
             if let Some(bit) = bit {
                 if *bit {
-                    n |= 1 << index
+                    n |= 1 << index;
                 } else {
-                    n &= usize::MAX ^ 1 << index
+                    n &= usize::MAX ^ 1 << index;
                 }
             }
         }
@@ -89,7 +89,7 @@ fn make_addresses(mask: &Option<Vec<Option<bool>>>, mut address: usize) -> Vec<u
         for (index, bit) in mask.iter().rev().enumerate() {
             if let Some(bit) = bit {
                 if *bit {
-                    address |= 1 << index
+                    address |= 1 << index;
                 }
             }
         }
@@ -139,7 +139,6 @@ mod tests {
         }
     }
 
-
     #[test]
     fn check_make_addresses() {
         if let Op::Mask(mask) = &input_generator("mask = 000000000000000000000000000000X1001X")[0] {
@@ -157,5 +156,4 @@ mod tests {
             unreachable!()
         }
     }
-
 }

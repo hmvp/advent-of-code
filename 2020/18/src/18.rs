@@ -81,7 +81,7 @@ fn sum_part2(input: &str) -> IResult<&str, Math> {
             parts.push(part);
             part = vec![n];
         } else {
-            part.push(n)
+            part.push(n);
         }
     }
     parts.push(part);

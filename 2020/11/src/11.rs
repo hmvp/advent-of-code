@@ -1,6 +1,4 @@
-
-
-
+#![allow(clippy::cast_possible_wrap)]
 aoc::parts!(1, 2);
 
 #[derive(Clone, Copy, PartialEq, Eq)]
@@ -30,19 +28,20 @@ pub struct WaitingArea {
 impl std::fmt::Debug for WaitingArea {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> Result<(), std::fmt::Error> {
         let mut result = Ok(());
-        result = result.and_then(|_| writeln!(f));
+        result = result.and_then(|()| writeln!(f));
         for y in 0..self.height {
             let offset = y * self.width;
             for x in 0..self.width {
-                result = result.and_then(|_| self.grid[offset + x].fmt(f));
+                result = result.and_then(|()| self.grid[offset + x].fmt(f));
             }
-            result = result.and_then(|_| writeln!(f));
+            result = result.and_then(|()| writeln!(f));
         }
         result
     }
 }
 
 impl WaitingArea {
+    #[must_use]
     pub fn next_part1(&self) -> Self {
         let mut grid = self.grid.clone();
         for y in 0..self.height {
@@ -53,7 +52,7 @@ impl WaitingArea {
                     match (cell_state, self.neighbor_seats_taken(x, y)) {
                         (Location::Empty, 0) => grid[offset + x] = Location::Taken,
                         (Location::Taken, seats_taken) if seats_taken >= 4 => {
-                            grid[offset + x] = Location::Empty
+                            grid[offset + x] = Location::Empty;
                         }
                         _ => {}
                     }
@@ -67,6 +66,7 @@ impl WaitingArea {
         }
     }
 
+    #[must_use]
     pub fn next_part2(&self) -> Self {
         let mut grid = self.grid.clone();
         for y in 0..self.height {
@@ -77,7 +77,7 @@ impl WaitingArea {
                     match (cell_state, self.neighbor_seats_taken_seen(x, y)) {
                         (Location::Empty, 0) => grid[offset + x] = Location::Taken,
                         (Location::Taken, seats_taken) if seats_taken >= 5 => {
-                            grid[offset + x] = Location::Empty
+                            grid[offset + x] = Location::Empty;
                         }
                         _ => {}
                     }
@@ -113,36 +113,26 @@ impl WaitingArea {
     }
 
     fn neighbor_seats_taken_seen(&self, x: usize, y: usize) -> usize {
-        [
-            (0, -1),
-            (0, 1),
-            (-1, -1),
-            (-1, 0),
-            (-1, 1),
-            (1, -1),
-            (1, 0),
-            (1, 1),
-        ]
-        .iter()
-        .filter_map(|&(d_y, d_x)| {
-            let mut x = d_x + x as isize;
-            let mut y = d_y + y as isize;
+        [(0, -1), (0, 1), (-1, -1), (-1, 0), (-1, 1), (1, -1), (1, 0), (1, 1)]
+            .iter()
+            .filter_map(|&(d_y, d_x)| {
+                let mut x = d_x + x as isize;
+                let mut y = d_y + y as isize;
 
-            while x >= 0 && x < self.width as isize && y >= 0 && y < self.height as isize {
+                while x >= 0 && x < self.width as isize && y >= 0 && y < self.height as isize {
+                    let state = self.get_location_state(x as usize, y as usize);
+                    if state == Location::Taken {
+                        return Some(());
+                    } else if state == Location::Empty {
+                        return None;
+                    }
 
-                let state = self.get_location_state(x as usize, y as usize);
-                if state == Location::Taken {
-                    return Some(());
-                } else if state == Location::Empty {
-                    return None;
+                    x += d_x;
+                    y += d_y;
                 }
-
-                x += d_x;
-                y += d_y;
-            }
-            None
-        })
-        .count()
+                None
+            })
+            .count()
     }
 
     fn get_location_state(&self, x: usize, y: usize) -> Location {
@@ -173,14 +163,8 @@ pub fn input_generator(input: &str) -> WaitingArea {
         .collect();
     let height = grid.len() / width;
 
-    WaitingArea {
-        height,
-        width,
-        grid,
-    }
+    WaitingArea { height, width, grid }
 }
-
-
 
 fn part_1(input: aoc::Input) -> impl ToString {
     let input = &input_generator(input.raw());
@@ -212,8 +196,6 @@ fn part_2(input: aoc::Input) -> impl ToString {
     input.seats_taken()
 }
 
-
-
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -234,7 +216,7 @@ L.LLLLL.LL
     #[test]
     fn check_input_generator() {
         let waiting_area = input_generator(INPUT);
-        assert_eq!(format!("{:?}", waiting_area), INPUT);
+        assert_eq!(format!("{waiting_area:?}"), INPUT);
         assert_eq!(waiting_area.width, 10);
         assert_eq!(waiting_area.height, 10);
     }
@@ -310,7 +292,7 @@ L.LLLLL.LL
 
         let waiting_area = input_generator(INPUT).next_part1();
 
-        assert_eq!(format!("{:?}", waiting_area), expected);
+        assert_eq!(format!("{waiting_area:?}"), expected);
 
         let waiting_area = waiting_area.next_part1();
 
@@ -327,7 +309,7 @@ L.L.L..L..
 #.#LLLL.##
 ";
 
-        assert_eq!(format!("{:?}", waiting_area), expected);
+        assert_eq!(format!("{waiting_area:?}"), expected);
 
         let waiting_area = waiting_area.next_part1();
 
@@ -344,12 +326,12 @@ L.#.#..#..
 #.#L###.##
 ";
 
-        assert_eq!(format!("{:?}", waiting_area), expected);
+        assert_eq!(format!("{waiting_area:?}"), expected);
     }
 
-        #[test]
-        fn check_moves_part2() {
-            let expected = "
+    #[test]
+    fn check_moves_part2() {
+        let expected = "
 #.##.##.##
 #######.##
 #.#.#..#..
@@ -362,13 +344,13 @@ L.#.#..#..
 #.#####.##
 ";
 
-            let waiting_area = input_generator(INPUT).next_part2();
+        let waiting_area = input_generator(INPUT).next_part2();
 
-            assert_eq!(format!("{:?}", waiting_area), expected);
+        assert_eq!(format!("{waiting_area:?}"), expected);
 
-            let waiting_area = waiting_area.next_part2();
+        let waiting_area = waiting_area.next_part2();
 
-            let expected = "
+        let expected = "
 #.LL.LL.L#
 #LLLLLL.LL
 L.L.L..L..
@@ -381,11 +363,11 @@ LLLLLLLLL#
 #.LLLLL.L#
 ";
 
-            assert_eq!(format!("{:?}", waiting_area), expected);
+        assert_eq!(format!("{waiting_area:?}"), expected);
 
-            let waiting_area = waiting_area.next_part2();
+        let waiting_area = waiting_area.next_part2();
 
-            let expected = "
+        let expected = "
 #.L#.##.L#
 #L#####.LL
 L.#.#..#..
@@ -398,6 +380,6 @@ LLL####LL#
 #.L####.L#
 ";
 
-            assert_eq!(format!("{:?}", waiting_area), expected);
-        }
+        assert_eq!(format!("{waiting_area:?}"), expected);
+    }
 }

@@ -1,14 +1,20 @@
+#![allow(clippy::cast_precision_loss)]
+
 use aoc::Input;
 
 aoc::parts!(1, 2);
 
 fn part_1(input: Input) -> impl ToString {
     let input: Vec<Vec<u8>> = input
-    .lines()
-    .map(|l| l.chars().map(|c| c.to_digit(10).unwrap() as u8).collect())
-    .collect();
+        .lines()
+        .map(|l| {
+            l.chars()
+                .map(|c| u8::try_from(c.to_digit(10).unwrap()).unwrap())
+                .collect()
+        })
+        .collect();
     let l = input.len();
-    let dl = input[0].len() as u32;
+    let dl = u32::try_from(input[0].len()).unwrap();
     let mut counts = vec![0u32; dl as usize];
     for n in input {
         for (index, d) in n.iter().enumerate() {
@@ -30,17 +36,19 @@ fn part_1(input: Input) -> impl ToString {
 
 fn part_2(input: Input) -> impl ToString {
     let input: Vec<Vec<u8>> = input
-    .lines()
-    .map(|l| l.chars().map(|c| c.to_digit(10).unwrap() as u8).collect())
-    .collect();
+        .lines()
+        .map(|l| {
+            l.chars()
+                .map(|c| u8::try_from(c.to_digit(10).unwrap()).unwrap())
+                .collect()
+        })
+        .collect();
     let oxygen = u32::from(calc(&input, false));
     let co2 = u32::from(calc(&input, true));
 
     println!("{oxygen:b} {co2:b} {oxygen:?} {co2:?}");
     oxygen * co2
 }
-
-
 
 fn filter_rec(mut input: Vec<Vec<u8>>, index: usize, co2: bool) -> Vec<Vec<u8>> {
     let l = input.len() as f32;
@@ -50,7 +58,9 @@ fn filter_rec(mut input: Vec<Vec<u8>>, index: usize, co2: bool) -> Vec<Vec<u8>> 
     }
     let test = if count as f32 >= l / 2f32 {
         u8::from(!co2)
-    } else { u8::from(co2) };
+    } else {
+        u8::from(co2)
+    };
 
     // println!("{:?} {:?} {:?} {:?}", count, test, l, count as f32 >= l / 2f32);
     // if co2 {

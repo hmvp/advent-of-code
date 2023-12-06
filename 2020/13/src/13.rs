@@ -1,3 +1,6 @@
+#![allow(clippy::cast_possible_wrap)]
+#![allow(clippy::many_single_char_names)]
+
 aoc::parts!(1, 2);
 
 pub fn input_generator(input: &str) -> (usize, Vec<(usize, usize)>) {
@@ -71,7 +74,7 @@ fn chinese_remainder(residues: &[isize], modulii: &[isize]) -> Option<isize> {
     let mut sum = 0;
     for (&residue, &modulus) in residues.iter().zip(modulii) {
         let p = prod / modulus;
-        sum += residue * mod_inv(p, modulus)? * p
+        sum += residue * mod_inv(p, modulus)? * p;
     }
     Some(sum % prod)
 }

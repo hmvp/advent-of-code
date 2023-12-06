@@ -1,7 +1,7 @@
 use itertools::Itertools;
 use nom::{
-    branch::alt, bytes::complete::tag, combinator::map as nom_map, sequence::delimited,
-    sequence::tuple, Finish, IResult,
+    branch::alt, bytes::complete::tag, combinator::map as nom_map, sequence::delimited, sequence::tuple, Finish,
+    IResult,
 };
 use std::collections::HashMap;
 
@@ -78,7 +78,7 @@ fn create_parser<'a, 'c>(
         }),
         Rule::Single(rule) => Box::from(move |s: &'a str| {
             let result = create_parser(map, *rule)(s);
-            result.map(|(rest, _)| (rest, ()))
+            result.map(|(rest, ())| (rest, ()))
         }),
         Rule::Double(rules) => Box::from(move |s: &'a str| {
             let result = tuple((create_parser(map, rules.0), create_parser(map, rules.1)))(s);
@@ -86,7 +86,7 @@ fn create_parser<'a, 'c>(
         }),
         Rule::SingleOr(rules1, rules2) => Box::from(move |s: &'a str| {
             let result = alt((create_parser(map, *rules1), create_parser(map, *rules2)))(s);
-            result.map(|(rest, _)| (rest, ()))
+            result.map(|(rest, ())| (rest, ()))
         }),
         Rule::DoubleOr(rules1, rules2) => Box::from(move |s: &'a str| {
             let result = alt((
@@ -103,7 +103,7 @@ fn create_parser<'a, 'c>(
                     |_| (),
                 ),
             ))(s);
-            result.map(|(rest, _)| (rest, ()))
+            result.map(|(rest, ())| (rest, ()))
         }),
         Rule::Part2R2(rules1, rules2) => Box::from(move |s: &'a str| {
             let result = alt((
@@ -114,7 +114,7 @@ fn create_parser<'a, 'c>(
                         create_parser(map, rules2.1),
                         create_parser(map, rules2.2),
                     ),
-                    |_| ((), ()),
+                    |()| ((), ()),
                 ),
             ))(s);
             result.map(|(rest, _)| (rest, ()))
@@ -131,7 +131,7 @@ fn part_1(input: aoc::Input) -> impl ToString {
         .iter()
         .map(|i| {
             dbg!(create_parser(&input.0, 0)(i).finish())
-                .map(|(rest, _)| rest.is_empty())
+                .map(|(rest, ())| rest.is_empty())
                 .unwrap_or(false)
         })
         .filter(|result| *result)
@@ -150,10 +150,9 @@ fn part_2(input: aoc::Input) -> impl ToString {
         .iter()
         .map(|i| {
             dbg!(create_parser(&input.0, 0)(i).finish())
-                .map(|(rest, _)| rest.is_empty())
+                .map(|(rest, ())| rest.is_empty())
                 .unwrap_or(false)
         })
         .filter(|result| *result)
         .count()
 }
-

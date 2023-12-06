@@ -1,4 +1,3 @@
-
 aoc::parts!(1, 2);
 
 fn part_1(input: aoc::Input) -> impl ToString {

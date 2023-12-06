@@ -15,7 +15,6 @@ aoc::parts!(1, 2);
 fn part_1(input: aoc::Input) -> impl ToString {
     let input = &input_generator(input);
 
-
     let mut nr_of_valid = 0;
     'outer: for p in input {
         for f in Field::iter() {
@@ -24,11 +23,12 @@ fn part_1(input: aoc::Input) -> impl ToString {
             }
         }
 
-        nr_of_valid += 1
+        nr_of_valid += 1;
     }
     nr_of_valid
 }
 
+#[allow(clippy::needless_continue)]
 fn part_2(input: aoc::Input) -> impl ToString {
     let input = &input_generator(input);
 
@@ -92,9 +92,8 @@ fn part_2(input: aoc::Input) -> impl ToString {
         }
 
         // hcl (Hair Color) - a # followed by exactly six characters 0-9 or a-f.
-        let result: IResult<&str, &str> = preceded(tag("#"), take_while_m_n(6, 6, is_hex_digit))(
-            p.get(&Field::HCL).unwrap().as_str(),
-        );
+        let result: IResult<&str, &str> =
+            preceded(tag("#"), take_while_m_n(6, 6, is_hex_digit))(p.get(&Field::HCL).unwrap().as_str());
         if result.ok().map_or(true, |(rest, _)| !rest.is_empty()) {
             continue 'outer;
         }
@@ -104,19 +103,16 @@ fn part_2(input: aoc::Input) -> impl ToString {
         }
 
         // pid (Passport ID) - a nine-digit number, including leading zeroes.
-        if p.get(&Field::PID).unwrap().parse::<usize>().is_err()
-            || p.get(&Field::PID).unwrap().len() != 9
-        {
+        if p.get(&Field::PID).unwrap().parse::<usize>().is_err() || p.get(&Field::PID).unwrap().len() != 9 {
             continue 'outer;
         }
 
         // cid (Country ID) - ignored, missing or not.
 
-        nr_of_valid += 1
+        nr_of_valid += 1;
     }
     nr_of_valid
 }
-
 
 #[derive(Debug, Clone, Copy, Hash, PartialEq, Eq, EnumIter)]
 pub enum Field {
@@ -176,7 +172,6 @@ fn passports(input: aoc::Input) -> IResult<&str, Vec<HashMap<Field, String>>> {
 pub fn input_generator(input: aoc::Input) -> Vec<HashMap<Field, String>> {
     passports(input).unwrap().1
 }
-
 
 const VALID_EYE_COLORS: [&str; 7] = ["amb", "blu", "brn", "gry", "grn", "hzl", "oth"];
 

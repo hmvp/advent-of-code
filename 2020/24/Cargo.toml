@@ -11,3 +11,7 @@ path = "src/24.rs"
 aoclib = "0.2.1"
 nom = "6.0.1"
 nom-supreme = "0.4.1"
+
+
+[lints]
+workspace = true

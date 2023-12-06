@@ -1,8 +1,6 @@
 use std::iter::repeat_with;
 
-
 aoc::parts!(1, 2);
-
 
 fn digits(n: usize, base: usize) -> Vec<usize> {
     let mut n = n;
@@ -31,7 +29,7 @@ fn find_lower_index(input: &[usize], current: usize) -> usize {
 
         let pos = input.iter().position(|i| *i == n);
 
-        if let Some(pos) = pos{
+        if let Some(pos) = pos {
             n = pos;
             break;
         }
@@ -81,7 +79,7 @@ fn part_2(input: aoc::Input) -> impl ToString {
         cups.rotate_left(1);
     }
     let pos_1 = cups.iter().position(|i| *i == 1).unwrap();
-    cups[pos_1+1] * cups[pos_1+2]
+    cups[pos_1 + 1] * cups[pos_1 + 2]
 }
 
 #[cfg(test)]

@@ -9,3 +9,6 @@ path = "src/13.rs"
 
 [dependencies]
 aoclib = "0.2.1"
+
+[lints]
+workspace = true

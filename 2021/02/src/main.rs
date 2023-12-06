@@ -27,12 +27,14 @@ fn part_2(input: Input) -> impl ToString {
         match x {
             Action::Up(i) => aim -= i,
             Action::Down(i) => aim += i,
-            Action::Forward(i) => {distance += i; depth += i * aim},
+            Action::Forward(i) => {
+                distance += i;
+                depth += i * aim;
+            }
         }
     }
     depth * distance
 }
-
 
 use std::num::ParseIntError;
 use std::str::FromStr;
@@ -57,4 +59,3 @@ impl FromStr for Action {
         })
     }
 }
-

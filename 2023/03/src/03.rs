@@ -2,16 +2,14 @@ use aoc::Input;
 
 aoc::parts!(1, 2);
 
-
 struct Position {
-    column :usize,
-    row: usize
+    column: usize,
+    row: usize,
 }
-
 
 impl Position {
     fn new(column: usize, row: usize) -> Self {
-        Position {column, row}
+        Position { column, row }
     }
 }
 enum EntryType {
@@ -37,12 +35,12 @@ impl Entry {
     fn is_close(&self, other: &Entry) -> bool {
         for position in &self.positions {
             for other_position in &other.positions {
-                if position.row.abs_diff(other_position.row) > 1{
-                    return false
+                if position.row.abs_diff(other_position.row) > 1 {
+                    return false;
                 }
 
-                if position.column.abs_diff(other_position.column) <= 1{
-                    return true
+                if position.column.abs_diff(other_position.column) <= 1 {
+                    return true;
                 }
             }
         }
@@ -60,35 +58,54 @@ impl Schematic {
     }
 
     fn part_number_sum(self) -> u32 {
+        let (mut numbers, symbols) = self
+            .entries
+            .iter()
+            .partition::<Vec<_>, _>(|item| matches!(item.etype, EntryType::Number(_)));
 
-        let (mut numbers, symbols) = self.entries.iter().partition::<Vec<_>,_>(|item|matches!(item.etype, EntryType::Number(_)));
-
-        numbers.drain(..).filter(|number|{
-            for symbol in &symbols {
-                if symbol.is_close(number) {
-                    return true
+        numbers
+            .drain(..)
+            .filter(|number| {
+                for symbol in &symbols {
+                    if symbol.is_close(number) {
+                        return true;
+                    }
                 }
-            }
-            false
-        }).map(|e|if let EntryType::Number(n) = e.etype {n} else {0}).sum()
+                false
+            })
+            .map(|e| if let EntryType::Number(n) = e.etype { n } else { 0 })
+            .sum()
     }
 
-    fn gear_sum(self)->u32 {
-        let (numbers, mut symbols) = self.entries.iter().partition::<Vec<_>,_>(|item|matches!(item.etype, EntryType::Number(_)));
+    fn gear_sum(self) -> u32 {
+        let (numbers, mut symbols) = self
+            .entries
+            .iter()
+            .partition::<Vec<_>, _>(|item| matches!(item.etype, EntryType::Number(_)));
 
-        symbols.drain(..).filter(|symbol|if let EntryType::Symbol(c) = symbol.etype { c == '*'} else {false}).map(|symbol|{
-            let mut close_numbers = Vec::new();
-            for number in &numbers {
-                if symbol.is_close(number) {
-                    close_numbers.push(number.unwrap_nr());
+        symbols
+            .drain(..)
+            .filter(|symbol| {
+                if let EntryType::Symbol(c) = symbol.etype {
+                    c == '*'
+                } else {
+                    false
                 }
-            }
-            if close_numbers.len() == 2 {
-                close_numbers[0] * close_numbers[1]
-            } else {
-                0
-            }
-        }).sum()
+            })
+            .map(|symbol| {
+                let mut close_numbers = Vec::new();
+                for number in &numbers {
+                    if symbol.is_close(number) {
+                        close_numbers.push(number.unwrap_nr());
+                    }
+                }
+                if close_numbers.len() == 2 {
+                    close_numbers[0] * close_numbers[1]
+                } else {
+                    0
+                }
+            })
+            .sum()
     }
 }
 
@@ -148,5 +165,5 @@ fn part_1(input: aoc::Input) -> impl ToString {
 fn part_2(input: aoc::Input) -> impl ToString {
     let schematic = parse(input);
 
-    schematic.gear_sum()}
-
+    schematic.gear_sum()
+}

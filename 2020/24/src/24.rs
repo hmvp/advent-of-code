@@ -4,7 +4,6 @@ use std::collections::HashSet;
 
 aoc::parts!(1, 2);
 
-
 #[derive(Debug)]
 pub enum Dir {
     E,
@@ -22,13 +21,13 @@ impl Dir {
             Dir::SE => *r += 1,
             Dir::SW => {
                 *q -= 1;
-                *r += 1
+                *r += 1;
             }
             Dir::W => *q -= 1,
             Dir::NW => *r -= 1,
             Dir::NE => {
                 *q += 1;
-                *r -= 1
+                *r -= 1;
             }
         }
     }
@@ -76,11 +75,10 @@ impl Lobby {
                 flipped_tiles.insert((q, r));
             }
         }
-        Self {
-            grid: flipped_tiles,
-        }
+        Self { grid: flipped_tiles }
     }
 
+    #[must_use]
     pub fn next(&self) -> Self {
         let mut grid = self.grid.clone();
         let q_start = *self.grid.iter().map(|(q, _)| q).min().unwrap() - 10;
@@ -90,10 +88,7 @@ impl Lobby {
 
         for q in q_start..=q_end {
             for r in r_start..=r_end {
-                match (
-                    self.get_location_state(q, r),
-                    self.neighbor_black_tiles(q, r),
-                ) {
+                match (self.get_location_state(q, r), self.neighbor_black_tiles(q, r)) {
                     (true, 0) => {
                         grid.remove(&(q, r));
                     }

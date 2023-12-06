@@ -4,7 +4,6 @@ use nom::{
     IResult,
 };
 
-
 aoc::parts!(1, 2);
 
 fn part_1(input: aoc::Input) -> impl ToString {
@@ -27,7 +26,7 @@ fn part_2(input: aoc::Input) -> impl ToString {
     for (first, second, khar, password) in &input {
         let nr_ofmatches = password
             .char_indices()
-            .filter(|(index, c)| c == khar && (*index == (first-1)|| *index == (second-1)))
+            .filter(|(index, c)| c == khar && (*index == (first - 1) || *index == (second - 1)))
             .count();
         if nr_ofmatches == 1 {
             valid_passwords += 1;
@@ -35,8 +34,6 @@ fn part_2(input: aoc::Input) -> impl ToString {
     }
     valid_passwords
 }
-
-
 
 fn password_line(input: &str) -> IResult<&str, (usize, usize, char, String)> {
     let (input, min_str) = digit1(input)?;

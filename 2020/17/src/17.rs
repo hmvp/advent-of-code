@@ -1,5 +1,6 @@
-aoc::parts!(1, 2);
+#![allow(clippy::cast_possible_wrap)]
 
+aoc::parts!(1, 2);
 
 fn make_row(x: usize) -> Vec<bool> {
     (0..x).map(|_| false).collect()
@@ -25,18 +26,18 @@ pub struct PocketDimension3D {
 impl std::fmt::Debug for PocketDimension3D {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> Result<(), std::fmt::Error> {
         let mut result = Ok(());
-        result = result.and_then(|_| writeln!(f));
+        result = result.and_then(|()| writeln!(f));
         for (z, z_planes) in self.grid.iter().enumerate() {
-            result = result.and_then(|_| writeln!(f, "z={}", z));
+            result = result.and_then(|()| writeln!(f, "z={z}"));
             for row in z_planes {
                 for x in row {
-                    result = result.and_then(|_| write!(f, "{}", if *x { "#" } else { "." }));
+                    result = result.and_then(|()| write!(f, "{}", if *x { "#" } else { "." }));
                 }
-                result = result.and_then(|_| writeln!(f));
+                result = result.and_then(|()| writeln!(f));
             }
 
             if z != self.grid.len() - 1 {
-                result = result.and_then(|_| writeln!(f));
+                result = result.and_then(|()| writeln!(f));
             }
         }
         result
@@ -44,6 +45,7 @@ impl std::fmt::Debug for PocketDimension3D {
 }
 
 impl PocketDimension3D {
+    #[must_use]
     pub fn next(&self) -> Self {
         let mut grid = self.grid.clone();
         grid.insert(0, make_zplane(grid[0].len(), grid[0][0].len()));
@@ -63,7 +65,7 @@ impl PocketDimension3D {
                             *cube = true;
                         }
                         (true, cubes_active) if cubes_active != 2 && cubes_active != 3 => {
-                            *cube = false
+                            *cube = false;
                         }
                         _ => {}
                     }
@@ -143,19 +145,19 @@ pub struct PocketDimension4D {
 impl std::fmt::Debug for PocketDimension4D {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> Result<(), std::fmt::Error> {
         let mut result = Ok(());
-        result = result.and_then(|_| writeln!(f));
+        result = result.and_then(|()| writeln!(f));
         for (w, cube) in self.grid.iter().enumerate() {
             for (z, z_planes) in cube.iter().enumerate() {
-                result = result.and_then(|_| writeln!(f, "z={}, w={}", z, w));
+                result = result.and_then(|()| writeln!(f, "z={z}, w={w}"));
                 for row in z_planes {
                     for x in row {
-                        result = result.and_then(|_| write!(f, "{}", if *x { "#" } else { "." }));
+                        result = result.and_then(|()| write!(f, "{}", if *x { "#" } else { "." }));
                     }
-                    result = result.and_then(|_| writeln!(f));
+                    result = result.and_then(|()| writeln!(f));
                 }
 
                 if z != self.grid.len() - 1 {
-                    result = result.and_then(|_| writeln!(f));
+                    result = result.and_then(|()| writeln!(f));
                 }
             }
         }
@@ -164,17 +166,11 @@ impl std::fmt::Debug for PocketDimension4D {
 }
 
 impl PocketDimension4D {
+    #[must_use]
     pub fn next(&self) -> Self {
         let mut grid = self.grid.clone();
-        grid.insert(
-            0,
-            make_cube(grid[0].len(), grid[0][0].len(), grid[0][0][0].len()),
-        );
-        grid.push(make_cube(
-            grid[0].len(),
-            grid[0][0].len(),
-            grid[0][0][0].len(),
-        ));
+        grid.insert(0, make_cube(grid[0].len(), grid[0][0].len(), grid[0][0][0].len()));
+        grid.push(make_cube(grid[0].len(), grid[0][0].len(), grid[0][0][0].len()));
         for (w, cube) in grid.iter_mut().enumerate() {
             cube.insert(0, make_zplane(cube[0].len(), cube[0][0].len()));
             cube.push(make_zplane(cube[0].len(), cube[0][0].len()));
@@ -187,18 +183,13 @@ impl PocketDimension4D {
                     for (x, cube) in row.iter_mut().enumerate() {
                         match (
                             &cube,
-                            self.neighbor_cubes_active(
-                                x as isize - 1,
-                                y as isize - 1,
-                                z as isize - 1,
-                                w as isize - 1,
-                            ),
+                            self.neighbor_cubes_active(x as isize - 1, y as isize - 1, z as isize - 1, w as isize - 1),
                         ) {
                             (false, 3) => {
                                 *cube = true;
                             }
                             (true, cubes_active) if cubes_active != 2 && cubes_active != 3 => {
-                                *cube = false
+                                *cube = false;
                             }
                             _ => {}
                         }
@@ -313,17 +304,13 @@ impl PocketDimension4D {
     }
 
     pub fn cubes_active(&self) -> usize {
-        self.grid
-            .iter()
-            .flatten()
-            .flatten()
-            .flatten()
-            .filter(|i| **i)
-            .count()
+        self.grid.iter().flatten().flatten().flatten().filter(|i| **i).count()
     }
 
     pub fn from(cube: &PocketDimension3D) -> Self {
-        PocketDimension4D {grid: vec![cube.grid.clone()]}
+        PocketDimension4D {
+            grid: vec![cube.grid.clone()],
+        }
     }
 }
 
@@ -363,7 +350,7 @@ mod tests {
     fn check_input_generator() {
         let waiting_area = input_generator(INPUT);
         assert_eq!(
-            format!("{:?}", waiting_area),
+            format!("{waiting_area:?}"),
             "
 z=0
 .#.
@@ -426,7 +413,7 @@ z=2
 
         let waiting_area = input_generator(INPUT).next();
 
-        assert_eq!(format!("{:?}", waiting_area), expected);
+        assert_eq!(format!("{waiting_area:?}"), expected);
 
         let waiting_area = waiting_area.next();
 
@@ -477,7 +464,7 @@ z=4
 .......
 ";
 
-        assert_eq!(format!("{:?}", waiting_area), expected);
+        assert_eq!(format!("{waiting_area:?}"), expected);
     }
 
     //     #[test]
@@ -533,5 +520,4 @@ z=4
 
     //         assert_eq!(format!("{:?}", waiting_area), expected);
     //     }
-
 }

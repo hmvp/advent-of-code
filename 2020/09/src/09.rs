@@ -29,26 +29,25 @@ fn part_1(input: aoc::Input) -> impl ToString {
 }
 
 fn find_parts_id(input: &[usize], outlier: usize) -> usize {
-    let parts: Vec<usize> =
-        input
-            .iter()
-            .fold(Vec::new(), |mut acc, i| match acc.iter().sum::<usize>() {
-                sum if sum < outlier => {
+    let parts: Vec<usize> = input
+        .iter()
+        .fold(Vec::new(), |mut acc, i| match acc.iter().sum::<usize>() {
+            sum if sum < outlier => {
+                acc.push(*i);
+                acc
+            }
+            sum if sum == outlier => acc,
+            sum if sum > outlier => {
+                while acc.iter().sum::<usize>() > outlier {
+                    acc.remove(0);
+                }
+                if acc.iter().sum::<usize>() != outlier {
                     acc.push(*i);
-                    acc
                 }
-                sum if sum == outlier => acc,
-                sum if sum > outlier => {
-                    while acc.iter().sum::<usize>() > outlier {
-                        acc.remove(0);
-                    }
-                    if acc.iter().sum::<usize>() != outlier {
-                        acc.push(*i);
-                    }
-                    acc
-                }
-                _ => unreachable!(),
-            });
+                acc
+            }
+            _ => unreachable!(),
+        });
 
     parts.iter().min().unwrap() + parts.iter().max().unwrap()
 }
@@ -61,7 +60,6 @@ fn part_2(input: aoc::Input) -> impl ToString {
     find_parts_id(input, outlier)
 }
 
-
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -70,10 +68,7 @@ mod tests {
     fn check_find_outlier() {
         assert_eq!(
             find_outlier(
-                &[
-                    35, 20, 15, 25, 47, 40, 62, 55, 65, 95, 102, 117, 150, 182, 127, 219, 299, 277,
-                    309, 576,
-                ],
+                &[35, 20, 15, 25, 47, 40, 62, 55, 65, 95, 102, 117, 150, 182, 127, 219, 299, 277, 309, 576,],
                 5
             ),
             127
@@ -84,14 +79,10 @@ mod tests {
     fn check_find_parts_id() {
         assert_eq!(
             find_parts_id(
-                &[
-                    35, 20, 15, 25, 47, 40, 62, 55, 65, 95, 102, 117, 150, 182, 127, 219, 299, 277,
-                    309, 576,
-                ],
+                &[35, 20, 15, 25, 47, 40, 62, 55, 65, 95, 102, 117, 150, 182, 127, 219, 299, 277, 309, 576,],
                 127
             ),
             62
         );
     }
 }
-
