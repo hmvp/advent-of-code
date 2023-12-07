@@ -11,10 +11,7 @@ fn parse_input1(input: &str) -> Vec<(bool, bool)> {
                 *count.entry(c).or_insert(0) += 1;
             }
 
-            (
-                count.values().any(|&x| x == 2),
-                count.values().any(|&x| x == 3),
-            )
+            (count.values().any(|&x| x == 2), count.values().any(|&x| x == 3))
         })
         .collect()
 }

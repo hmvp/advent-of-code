@@ -42,10 +42,19 @@ fn part_2(input: aoc::Input) -> impl ToString {
     input
         .iter()
         .filter_map(|(first, second)| {
-            if [first.contains(second.start()),
+            if [
+                first.contains(second.start()),
                 first.contains(second.end()),
                 second.contains(first.start()),
-                second.contains(first.end())] .iter().any(|&x|x) {Some(())} else {None}
+                second.contains(first.end()),
+            ]
+            .iter()
+            .any(|&x| x)
+            {
+                Some(())
+            } else {
+                None
+            }
         })
         .count()
 }

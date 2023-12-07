@@ -58,10 +58,7 @@ fn parse_observation(line: &str) -> Observation {
 }
 
 fn parse_input(input: &str) -> Vec<(usize, [usize; 60])> {
-    let mut observations = input
-        .lines()
-        .map(parse_observation)
-        .collect::<Vec<Observation>>();
+    let mut observations = input.lines().map(parse_observation).collect::<Vec<Observation>>();
 
     observations.sort_by(|a, b| a.timestamp.cmp(&b.timestamp));
 

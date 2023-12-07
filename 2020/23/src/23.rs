@@ -10,7 +10,7 @@ fn moves(mut current_cup: usize, mut cups: Vec<usize>, nr_of_moves: usize) -> Ve
         let taken_out = [
             cups[current_cup],
             cups[cups[current_cup]],
-            cups[cups[cups[current_cup]]]
+            cups[cups[cups[current_cup]]],
         ];
         cups[current_cup] = cups[cups[cups[cups[current_cup]]]];
 
@@ -30,7 +30,6 @@ fn moves(mut current_cup: usize, mut cups: Vec<usize>, nr_of_moves: usize) -> Ve
 
     cups
 }
-
 
 fn part_1(input: aoc::Input) -> impl ToString {
     let mut input = parse_input(input);

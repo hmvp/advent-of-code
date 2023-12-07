@@ -2,9 +2,6 @@ use std::collections::HashMap;
 
 aoc::parts!(1);
 
-
-
-
 #[derive(Debug, PartialEq)]
 struct Point {
     x: usize,
@@ -85,33 +82,24 @@ fn part_1(input: aoc::Input) -> impl ToString {
     //     println!();
     // }
 
-    let sizes = space
-        .iter()
-        .flat_map(|row| row.iter())
-        .enumerate()
-        .fold(
-            HashMap::new(),
-            |mut map: HashMap<usize, isize>, (index, value)| {
-                if let Some(value) = value {
-                    let x = index % space.len();
-                    let count = map.entry(*value).or_default();
-                    if x == 0
-                        || x == space.len() - 1
-                        || *value < space.len()
-                        || *value >= space.len() * space.len() - 1
-                    {
-                        *count = -99999;
-                    } else {
-                        *count += 1;
-                    }
+    let sizes = space.iter().flat_map(|row| row.iter()).enumerate().fold(
+        HashMap::new(),
+        |mut map: HashMap<usize, isize>, (index, value)| {
+            if let Some(value) = value {
+                let x = index % space.len();
+                let count = map.entry(*value).or_default();
+                if x == 0 || x == space.len() - 1 || *value < space.len() || *value >= space.len() * space.len() - 1 {
+                    *count = -99999;
+                } else {
+                    *count += 1;
                 }
-                map
-            },
-        );
+            }
+            map
+        },
+    );
 
     *sizes.iter().max_by_key(|(_id, size)| *size).unwrap().0
 }
-
 
 // fn part_2(input: aoc::Input) -> impl ToString {
 //     0

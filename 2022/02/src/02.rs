@@ -54,7 +54,6 @@ impl Game {
     }
 }
 
-
 fn part_1(input: aoc::Input) -> impl ToString {
     input
         .lines()
