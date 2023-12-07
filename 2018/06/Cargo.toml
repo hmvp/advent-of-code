@@ -1,0 +1,18 @@
+[package]
+name = "y2018d06"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "y2018d06"
+path = "src/06.rs"
+
+[dependencies]
+aoclib = "0.2.1"
+
+[dependencies.nom]
+version = "4.1.1"
+features = ["verbose-errors"]
+
+[lints]
+workspace = true
