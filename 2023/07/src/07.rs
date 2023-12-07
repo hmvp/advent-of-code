@@ -60,6 +60,8 @@ enum HandType {
 impl HandType {
     fn from_cards(cards: &str) -> Self {
         let counts = cards.chars().counts();
+
+        #[allow(clippy::match_same_arms)]
         match (
             counts.get(&'Z').unwrap_or(&0),
             &counts.values().sorted().rev().collect_vec()[..],
