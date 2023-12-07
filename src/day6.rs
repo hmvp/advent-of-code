@@ -76,8 +76,8 @@ fn find_node<'a, T: std::cmp::PartialEq>(node: &'a Node<T>, key: &T) -> Option<&
     }
 }
 
-fn path_to_root<T: std::fmt::Debug + std::cmp::PartialEq + Clone>(n: &Node<T>, key: T) -> Vec<T> {
-    let mut node = find_node(n, &key);
+fn path_to_root<T: std::fmt::Debug + std::cmp::PartialEq + Clone>(n: &Node<T>, key: &T) -> Vec<T> {
+    let mut node = find_node(n, key);
     let mut result = Vec::new();
 
     while let Some(n) = node {
@@ -90,8 +90,8 @@ fn path_to_root<T: std::fmt::Debug + std::cmp::PartialEq + Clone>(n: &Node<T>, k
 
 #[aoc(day6, part2)]
 pub fn part2(tree: &Tree<String>) -> usize {
-    let path_you = path_to_root(tree.root(), "YOU".to_owned());
-    let path_san = path_to_root(tree.root(), "SAN".to_owned());
+    let path_you = path_to_root(tree.root(), &"YOU".to_owned());
+    let path_san = path_to_root(tree.root(), &"SAN".to_owned());
 
     let path_you_filtered = path_you
         .iter()

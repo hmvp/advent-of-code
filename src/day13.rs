@@ -41,16 +41,14 @@ pub fn part1(program: &[isize]) -> usize {
         for x in 0..45 {
             print!(
                 "{}",
-                grid.get(&(x, y))
-                    .map(|v| match v {
-                        0 => " ",
-                        1 => "H",
-                        2 => "#",
-                        3 => "-",
-                        4 => "O",
-                        _ => unreachable!(),
-                    })
-                    .unwrap_or(" ")
+                grid.get(&(x, y)).map_or(" ", |v| match v {
+                    0 => " ",
+                    1 => "H",
+                    2 => "#",
+                    3 => "-",
+                    4 => "O",
+                    _ => unreachable!(),
+                })
             );
         }
         println!();
@@ -58,11 +56,8 @@ pub fn part1(program: &[isize]) -> usize {
 
     grid.values()
         .filter_map(|v| match v {
-            0 => None,
-            1 => None,
+            0..=1 | 3..=4 => None,
             2 => Some(()),
-            3 => None,
-            4 => None,
             _ => unreachable!(),
         })
         .count()
@@ -91,12 +86,10 @@ pub fn part2(program: &[isize]) -> usize {
             if let (Ok(x), Ok(y), Ok(tile)) = (x, y, tile) {
                 grid.insert((x, y), tile);
                 if tile == 4 {
-                    let delta = if x > paddle {
-                        1
-                    } else if x == paddle {
-                        0
-                    } else {
-                        -1
+                    let delta = match x {
+                        x if x > paddle => 1,
+                        x if x == paddle => 0,
+                        _ => -1,
                     };
                     input_sender.send(delta).unwrap();
                 }
@@ -115,16 +108,14 @@ pub fn part2(program: &[isize]) -> usize {
         for x in 0..45 {
             print!(
                 "{}",
-                grid.get(&(x, y))
-                    .map(|v| match v {
-                        0 => " ",
-                        1 => "H",
-                        2 => "#",
-                        3 => "-",
-                        4 => "O",
-                        _ => unreachable!(),
-                    })
-                    .unwrap_or("_")
+                grid.get(&(x, y)).map_or(" ", |v| match v {
+                    0 => " ",
+                    1 => "H",
+                    2 => "#",
+                    3 => "-",
+                    4 => "O",
+                    _ => unreachable!(),
+                })
             );
         }
         println!();
@@ -134,11 +125,7 @@ pub fn part2(program: &[isize]) -> usize {
 
     grid.values()
         .filter_map(|v| match v {
-            0 => None,
-            1 => None,
             2 => Some(()),
-            3 => None,
-            4 => None,
             _ => None,
         })
         .count()

@@ -23,6 +23,47 @@ pub struct Moon {
     vz: i8,
 }
 
+impl Moon {
+    pub fn energy(&self) -> i16 {
+        (self.x.abs() + self.y.abs() + self.z.abs())
+            * i16::from(self.vx.abs() + self.vy.abs() + self.vz.abs())
+    }
+
+    pub fn calc_gravity(&self, other: &Self, gravity: &mut Gravity) {
+        let vx = self.x.cmp(&other.x);
+        let vy = self.y.cmp(&other.y);
+        let vz = self.z.cmp(&other.z);
+
+        match vx {
+            Ordering::Greater => gravity.x -= 1,
+            Ordering::Equal => {}
+            Ordering::Less => gravity.x += 1,
+        };
+        match vy {
+            Ordering::Greater => gravity.y -= 1,
+            Ordering::Equal => {}
+            Ordering::Less => gravity.y += 1,
+        };
+        match vz {
+            Ordering::Greater => gravity.z -= 1,
+            Ordering::Equal => {}
+            Ordering::Less => gravity.z += 1,
+        };
+    }
+
+    pub fn apply_gravity(&mut self, gravity: &Gravity) {
+        self.vx += gravity.x as i8;
+        self.vy += gravity.y as i8;
+        self.vz += gravity.z as i8;
+    }
+
+    pub fn apply_velocity(&mut self) {
+        self.x += i16::from(self.vx);
+        self.y += i16::from(self.vy);
+        self.z += i16::from(self.vz);
+    }
+}
+
 #[derive(Default)]
 pub struct Gravity {
     x: i8,
@@ -30,32 +71,12 @@ pub struct Gravity {
     z: i8,
 }
 
-impl Moon1D {
-    pub fn calc_gravity(&self, other: &Self, gravity: &mut Gravity) {
-        let vx = self.x.cmp(&other.x);
-
-        match vx {
-            Ordering::Greater => gravity.x -= 1,
-            Ordering::Equal => {}
-            Ordering::Less => gravity.x += 1,
-        };
-    }
-
-    pub fn apply_gravity(&mut self, gravity: Gravity) {
-        self.vx += gravity.x as i8;
-    }
-
-    pub fn apply_velocity(&mut self) {
-        self.x += self.vx as i16;
-    }
-}
-
 fn is_digit(c: char) -> bool {
     c.is_digit(10)
 }
 
 fn coord(input: &str) -> IResult<&str, (&str, i16)> {
-    let (rest, label) = take(1u8)(input)?;
+    let (rest, label) = take(1_u8)(input)?;
     let (rest, _) = tag("=")(rest)?;
     let (rest, minus) = opt(tag("-"))(rest)?;
     let (rest, number) = take_while1(is_digit)(rest)?;
@@ -101,7 +122,7 @@ pub fn iterate(times: usize, moons: &mut [Moon]) {
                     moons[moona].calc_gravity(&moons[moonb], &mut gravity);
                 }
             }
-            moons[moona].apply_gravity(gravity);
+            moons[moona].apply_gravity(&gravity);
         }
         for moon in moons.iter_mut() {
             moon.apply_velocity();
@@ -115,7 +136,7 @@ pub fn part1(moons: &[Moon]) -> i16 {
 
     iterate(1000, &mut moons);
 
-    moons.iter().map(|m| m.energy()).sum()
+    moons.iter().map(Moon::energy).sum()
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
@@ -124,44 +145,23 @@ pub struct Moon1D {
     vx: i8,
 }
 
-impl Moon {
-    pub fn energy(&self) -> i16 {
-        (self.x.abs() + self.y.abs() + self.z.abs())
-            * (self.vx.abs() + self.vy.abs() + self.vz.abs()) as i16
-    }
-
-    pub fn calc_gravity(&self, other: &Self, gravity: &mut Gravity) {
+impl Moon1D {
+    pub fn calc_gravity(self, other: Self, gravity: &mut Gravity) {
         let vx = self.x.cmp(&other.x);
-        let vy = self.y.cmp(&other.y);
-        let vz = self.z.cmp(&other.z);
 
         match vx {
             Ordering::Greater => gravity.x -= 1,
             Ordering::Equal => {}
             Ordering::Less => gravity.x += 1,
         };
-        match vy {
-            Ordering::Greater => gravity.y -= 1,
-            Ordering::Equal => {}
-            Ordering::Less => gravity.y += 1,
-        };
-        match vz {
-            Ordering::Greater => gravity.z -= 1,
-            Ordering::Equal => {}
-            Ordering::Less => gravity.z += 1,
-        };
     }
 
-    pub fn apply_gravity(&mut self, gravity: Gravity) {
+    pub fn apply_gravity(&mut self, gravity: &Gravity) {
         self.vx += gravity.x as i8;
-        self.vy += gravity.y as i8;
-        self.vz += gravity.z as i8;
     }
 
     pub fn apply_velocity(&mut self) {
-        self.x += self.vx as i16;
-        self.y += self.vy as i16;
-        self.z += self.vz as i16;
+        self.x += i16::from(self.vx);
     }
 }
 
@@ -176,10 +176,10 @@ pub fn iterate_part2(moons: &mut [Moon1D]) -> usize {
             let mut gravity = Gravity::default();
             for moonb in 0..nr {
                 if moona != moonb {
-                    moons[moona].calc_gravity(&moons[moonb], &mut gravity);
+                    moons[moona].calc_gravity(moons[moonb], &mut gravity);
                 }
             }
-            moons[moona].apply_gravity(gravity);
+            moons[moona].apply_gravity(&gravity);
         }
         for moon in moons.iter_mut() {
             moon.apply_velocity();
@@ -195,21 +195,21 @@ pub fn iterate_part2(moons: &mut [Moon1D]) -> usize {
 
 #[aoc(day12, part2)]
 pub fn part2(moons: &[Moon]) -> usize {
-    let mut moonsx = moons
+    let mut moons_x = moons
         .iter()
         .map(|m| Moon1D { x: m.x, vx: m.vx })
         .collect::<Vec<Moon1D>>();
-    let x = iterate_part2(&mut moonsx);
-    let mut moonsy = moons
+    let x = iterate_part2(&mut moons_x);
+    let mut moons_y = moons
         .iter()
         .map(|m| Moon1D { x: m.y, vx: m.vy })
         .collect::<Vec<Moon1D>>();
-    let y = iterate_part2(&mut moonsy);
-    let mut moonsz = moons
+    let y = iterate_part2(&mut moons_y);
+    let mut moons_z = moons
         .iter()
         .map(|m| Moon1D { x: m.z, vx: m.vz })
         .collect::<Vec<Moon1D>>();
-    let z = iterate_part2(&mut moonsz);
+    let z = iterate_part2(&mut moons_z);
 
     dbg!(x, y, z);
     let lcm_x_y = (x * y) / x.gcd(y);
@@ -284,13 +284,13 @@ mod tests {
             },
         ];
 
-        assert_eq!(moons.iter().map(|m| m.energy()).sum::<i16>(), 179);
+        assert_eq!(moons.iter().map(Moon::energy).sum::<i16>(), 179);
 
         let mut moons = input_generator(
             "<x=-1, y=0, z=2>\n<x=2, y=-10, z=-7>\n<x=4, y=-8, z=8>\n<x=3, y=5, z=-1>",
         );
 
-        assert_eq!(moons.iter().map(|m| m.energy()).sum::<i16>(), 0);
+        assert_eq!(moons.iter().map(Moon::energy).sum::<i16>(), 0);
 
         iterate(1, &mut moons);
 
@@ -332,11 +332,11 @@ mod tests {
             ]
         );
 
-        assert_eq!(moons.iter().map(|m| m.energy()).sum::<i16>(), 229);
+        assert_eq!(moons.iter().map(Moon::energy).sum::<i16>(), 229);
 
         iterate(9, &mut moons);
 
-        assert_eq!(moons.iter().map(|m| m.energy()).sum::<i16>(), 179);
+        assert_eq!(moons.iter().map(Moon::energy).sum::<i16>(), 179);
 
         let mut moons = input_generator(
             "<x=-8, y=-10, z=0>\n<x=5, y=5, z=10>\n<x=2, y=-7, z=3>\n<x=9, y=-8, z=-3>",
@@ -344,6 +344,6 @@ mod tests {
 
         iterate(100, &mut moons);
 
-        assert_eq!(moons.iter().map(|m| m.energy()).sum::<i16>(), 1940);
+        assert_eq!(moons.iter().map(Moon::energy).sum::<i16>(), 1940);
     }
 }

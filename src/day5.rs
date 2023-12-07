@@ -1,4 +1,4 @@
-use super::compute::simple_compute;
+use super::compute::simple;
 use aoc_runner_derive::{aoc, aoc_generator};
 
 #[aoc_generator(day5)]
@@ -8,21 +8,21 @@ pub fn input_generator(input: &str) -> Vec<isize> {
 
 #[aoc(day5, part1)]
 pub fn part1(program: &[isize]) -> isize {
-    let output = simple_compute(program, &[1]);
+    let output = simple(program, &[1]);
 
     *output.last().unwrap()
 }
 
 #[aoc(day5, part2)]
 pub fn part2(program: &[isize]) -> isize {
-    let output = simple_compute(program, &[5]);
+    let output = simple(program, &[5]);
 
     *output.last().unwrap()
 }
 
 #[cfg(test)]
 mod tests {
-    use super::simple_compute as compute;
+    use super::simple as compute;
 
     #[test]
     fn check_compute_equals_pos() {

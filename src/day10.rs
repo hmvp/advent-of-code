@@ -17,10 +17,10 @@ impl PartialOrd for Astroid {
 
 impl Ord for Astroid {
     fn cmp(&self, other: &Self) -> Ordering {
-        let atan = (self.x as f64).atan2(self.y as f64);
-        let btan = (other.x as f64).atan2(other.y as f64);
+        let a_tan = (self.x as f64).atan2(self.y as f64);
+        let b_tan = (other.x as f64).atan2(other.y as f64);
 
-        let arc = btan.partial_cmp(&atan).unwrap();
+        let arc = b_tan.partial_cmp(&a_tan).unwrap();
 
         if arc == Ordering::Equal {
             self.man_distance().cmp(&other.man_distance())
@@ -31,8 +31,8 @@ impl Ord for Astroid {
 }
 
 impl Astroid {
-    pub fn relative_coordinates(&self, other: &Astroid) -> Astroid {
-        Astroid {
+    pub fn relative_coordinates(&self, other: &Self) -> Self {
+        Self {
             x: other.x - self.x,
             y: other.y - self.y,
         }
@@ -59,8 +59,8 @@ impl Map {
             && astroid.y < (self.height + self.y)
     }
 
-    pub fn filter_invisible(&self, astroid: &Astroid) -> Map {
-        let mut map = Map {
+    pub fn filter_invisible(&self, astroid: &Astroid) -> Self {
+        let mut map = Self {
             x: -astroid.x,
             y: -astroid.y,
             width: self.width,
@@ -68,8 +68,13 @@ impl Map {
             astroids: self
                 .astroids
                 .iter()
-                .filter(|&a| a != astroid)
-                .map(|a| astroid.relative_coordinates(a))
+                .filter_map(|a| {
+                    if a == astroid {
+                        None
+                    } else {
+                        Some(astroid.relative_coordinates(a))
+                    }
+                })
                 .collect(),
         };
         map.clear_projections();

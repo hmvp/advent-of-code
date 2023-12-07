@@ -136,8 +136,7 @@ pub fn part2(program: &[isize]) -> usize {
             print!(
                 "{}",
                 grid.get(&(x, y))
-                    .map(|v| if v == &0 { " " } else { "#" })
-                    .unwrap_or(" ")
+                    .map_or(" ", |v| if v == &0 { " " } else { "#" })
             );
         }
         println!();

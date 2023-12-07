@@ -53,14 +53,10 @@ pub fn compute(program: &[isize], input: &Receiver<isize>, output: &Sender<isize
             }
             3 => {
                 // Input
-                let input = input.recv();
-                if let Ok(input) = input {
-                    set_result(&mut memory, ip, 1, relative_base, input);
+                let input = input.try_recv().unwrap_or(-1);
+                set_result(&mut memory, ip, 1, relative_base, input);
 
-                    ip += 2;
-                } else {
-                    break;
-                }
+                ip += 2;
             }
             4 => {
                 // Output
@@ -106,7 +102,7 @@ pub fn compute(program: &[isize], input: &Receiver<isize>, output: &Sender<isize
     }
 }
 
-pub fn simple_compute(program: &[isize], input_data: &[isize]) -> Vec<isize> {
+pub fn simple(program: &[isize], input_data: &[isize]) -> Vec<isize> {
     let (input_sender, input) = unbounded();
     let (output, output_receiver) = unbounded();
 

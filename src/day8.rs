@@ -30,7 +30,7 @@ pub fn part1(input: &[u8]) -> usize {
 pub fn part2(input: &[u8]) -> usize {
     const SIZE: usize = 25 * 6;
 
-    let picture = input.chunks(SIZE).fold([2u8; SIZE], |mut picture, layer| {
+    let picture = input.chunks(SIZE).fold([2_u8; SIZE], |mut picture, layer| {
         for i in 0..SIZE {
             if picture[i] == 2 {
                 picture[i] = layer[i]
