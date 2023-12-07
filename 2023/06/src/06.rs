@@ -4,6 +4,7 @@ use nom::combinator::map;
 use nom::multi::{many1, separated_list1};
 use nom::sequence::preceded;
 use std::iter::zip;
+
 aoc::parts!(1, 2);
 
 struct Race {
