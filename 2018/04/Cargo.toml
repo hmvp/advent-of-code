@@ -1,0 +1,15 @@
+[package]
+name = "y2018d04"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "y2018d04"
+path = "src/04.rs"
+
+[dependencies]
+aoclib = "0.2.1"
+chrono = "0.4.31"
+
+[lints]
+workspace = true
