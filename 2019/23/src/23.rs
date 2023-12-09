@@ -2,7 +2,7 @@ use compute::compute;
 use crossbeam_channel::{unbounded, Receiver, Sender};
 use crossbeam_utils::thread;
 
-aoc::parts!(2);
+aoc::parts!(1, 2);
 
 pub fn input_generator(input: &str) -> Vec<isize> {
     input.split(',').map(|l| l.parse().unwrap()).collect()
@@ -13,52 +13,53 @@ struct Nic {
     output: Receiver<isize>,
 }
 
-// #[aoc(day23, part1)]
-// pub fn part1(program: &[isize]) -> isize {
-//     let mut result = 0;
-//     let mut nics: Vec<Nic> = Vec::new();
-//     thread::scope(|s| {
-//         (0..50).for_each(|i| {
-//             let (input, input_receiver) = unbounded();
-//             let (output_sender, output) = unbounded();
+fn part_1(input: aoc::Input) -> impl ToString {
+    let program = &input_generator(input.raw());
 
-//             input.send(i).unwrap();
+    let mut result = 0;
+    let mut nics: Vec<Nic> = Vec::new();
+    thread::scope(|s| {
+        (0..50).for_each(|i| {
+            let (input, input_receiver) = unbounded();
+            let (output_sender, output) = unbounded();
 
-//             s.spawn(move |_| {
-//                 compute(program, &input_receiver, &output_sender);
-//             });
+            input.send(i).unwrap();
 
-//             nics.push(Nic { input, output });
-//         });
+            s.spawn(move |_| {
+                compute(program, &input_receiver, &output_sender);
+            });
 
-//         loop {
-//             for nic in nics.iter() {
-//                 if nic.input.len() == 0 {
-//                     nic.input.send(-1).unwrap();
-//                 }
-//                 let target = nic.output.try_recv();
-//                 let x = nic.output.try_recv();
-//                 let y = nic.output.try_recv();
+            nics.push(Nic { input, output });
+        });
 
-//                 if let (Ok(target), Ok(x), Ok(y)) = (target, x, y) {
-//                     if (target as usize) < nics.len() {
-//                         nics[target as usize].input.send(x).unwrap();
-//                         nics[target as usize].input.send(y).unwrap();
-//                     } else {
-//                         dbg!(target, &y);
-//                         result = y;
+        loop {
+            for nic in &nics {
+                if nic.input.is_empty() {
+                    nic.input.send(-1).unwrap();
+                }
+                let target = nic.output.try_recv();
+                let x = nic.output.try_recv();
+                let y = nic.output.try_recv();
 
-//                         nics.drain(..).for_each(drop);
-//                         dbg!("aa");
-//                         break;
-//                     }
-//                 }
-//             }
-//         }
-//     })
-//     .unwrap();
-//     result
-// }
+                if let (Ok(target), Ok(x), Ok(y)) = (target, x, y) {
+                    if (target as usize) < nics.len() {
+                        nics[target as usize].input.send(x).unwrap();
+                        nics[target as usize].input.send(y).unwrap();
+                    } else {
+                        dbg!(target, &y);
+                        result = y;
+
+                        nics.drain(..).for_each(drop);
+                        dbg!("aa");
+                        break;
+                    }
+                }
+            }
+        }
+    })
+    .unwrap();
+    result
+}
 
 #[allow(clippy::len_zero)]
 fn part_2(input: aoc::Input) -> impl ToString {
