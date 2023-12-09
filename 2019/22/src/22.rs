@@ -6,7 +6,7 @@ use nom::combinator::value;
 use nom::sequence::preceded;
 use nom::IResult;
 
-aoc::parts!(1, 2);
+aoc::parts!(1);
 
 #[derive(Clone, Debug)]
 pub enum Deal {

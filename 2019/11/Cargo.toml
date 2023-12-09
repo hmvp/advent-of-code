@@ -12,6 +12,7 @@ aoclib = "0.2.1"
 crossbeam-channel = "0.4"
 crossbeam-utils = "0.7.0"
 compute = {path = "../compute"}
+ocr = {path = "../ocr"}
 
 [lints]
 workspace = true

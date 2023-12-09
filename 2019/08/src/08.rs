@@ -1,4 +1,5 @@
 use bytecount::count;
+use ocr::Ocr;
 
 aoc::parts!(1, 2);
 
@@ -37,9 +38,9 @@ fn part_2(input: aoc::Input) -> impl ToString {
         }
         picture
     });
+    let mut result = String::new();
     picture.chunks(25).for_each(|row| {
-        row.iter().for_each(|&c| if c == 1 { print!("X") } else { print!(" ") });
-        println!();
+        row.iter().for_each(|&c| if c == 1 { result.push('#') } else { result.push(' ') });
     });
-    0
+    result.ocr(25)
 }

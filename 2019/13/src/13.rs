@@ -55,13 +55,7 @@ fn part_1(input: aoc::Input) -> impl ToString {
         println!();
     }
 
-    grid.values()
-        .filter_map(|v| match v {
-            0..=1 | 3..=4 => None,
-            2 => Some(()),
-            _ => unreachable!(),
-        })
-        .count()
+    grid.values().filter(|&&v| v == 2).count()
 }
 
 fn part_2(input: aoc::Input) -> impl ToString {
@@ -122,14 +116,7 @@ fn part_2(input: aoc::Input) -> impl ToString {
         println!();
     }
 
-    println!("Score: {}", grid.get(&(-1, 0)).unwrap());
-
-    grid.values()
-        .filter_map(|v| match v {
-            2 => Some(()),
-            _ => None,
-        })
-        .count()
+    *grid.get(&(-1, 0)).unwrap()
 }
 
 #[cfg(test)]

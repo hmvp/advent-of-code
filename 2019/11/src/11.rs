@@ -3,6 +3,7 @@ use crossbeam_channel::unbounded;
 use crossbeam_utils::thread;
 use std::collections::HashMap;
 use std::time::Duration;
+use ocr::Ocr;
 
 aoc::parts!(1, 2);
 
@@ -133,14 +134,14 @@ fn part_2(input: aoc::Input) -> impl ToString {
     })
     .unwrap();
 
-    for y in (-7..3).rev() {
-        for x in -10..50 {
-            print!("{}", grid.get(&(x, y)).map_or(" ", |v| if v == &0 { " " } else { "#" }));
+    let mut result = String::new();
+    for y in (-5..=0).rev() {
+        for x in 1..=40 {
+            result.push(grid.get(&(x, y)).map_or(' ', |v| if v == &0 { ' ' } else { '#' }));
         }
-        println!();
     }
 
-    grid.len()
+    result.ocr(40)
 }
 
 #[cfg(test)]

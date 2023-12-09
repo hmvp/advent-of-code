@@ -10,6 +10,7 @@ path = "src/08.rs"
 [dependencies]
 aoclib = "0.2.1"
 bytecount = "0.6.0"
+ocr = {path = "../ocr"}
 
 [lints]
 workspace = true

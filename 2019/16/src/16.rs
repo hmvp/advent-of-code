@@ -1,6 +1,6 @@
 use std::iter::repeat;
 
-aoc::parts!(1, 2);
+aoc::parts!(1);
 
 pub fn input_generator(input: &str) -> Vec<u8> {
     input.chars().map(|c| u8::try_from(c.to_digit(10).unwrap()).unwrap()).collect()
