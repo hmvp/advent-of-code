@@ -1,9 +1,10 @@
-use std::collections::{HashMap, HashSet};
+use std::collections::HashMap;
 
+use gcd::Gcd;
 use nom::branch::alt;
 use nom::bytes::complete::tag;
 use nom::character::complete::{alphanumeric1, multispace1, newline};
-use nom::combinator::{map, value, opt};
+use nom::combinator::{map, opt, value};
 use nom::multi::many1;
 use nom::sequence::{delimited, pair, separated_pair, terminated};
 
@@ -45,13 +46,15 @@ fn parse_input(input: aoc::Input) -> (Vec<Instruction>, HashMap<&str, (&str, &st
     parse_all(input.raw()).unwrap().1
 }
 
-fn part_1(input: aoc::Input) -> impl ToString {
-    let (instructions, map) = parse_input(input);
-
-    let mut current_position = "AAA";
+fn resolve_instructions(
+    starting_position: &str,
+    map: &HashMap<&str, (&str, &str)>,
+    instructions: &[Instruction],
+) -> usize {
+    let mut current_position = starting_position;
     let mut count = 0;
-    while current_position != "ZZZ" {
-        for instruction in &instructions {
+    while !current_position.ends_with('Z') {
+        for instruction in instructions {
             count += 1;
             match instruction {
                 Instruction::R => current_position = map[current_position].1,
@@ -62,38 +65,22 @@ fn part_1(input: aoc::Input) -> impl ToString {
     count
 }
 
+fn part_1(input: aoc::Input) -> impl ToString {
+    let (instructions, map) = parse_input(input);
+
+    resolve_instructions("AAA", &map, &instructions)
+}
+
+fn lcm(a: usize, b: usize) -> usize {
+    a * (b / a.gcd(b))
+}
+
 fn part_2(input: aoc::Input) -> impl ToString {
     let (instructions, map) = dbg!(parse_input(input));
 
-    let starting_positions = map
-        .keys()
+    map.keys()
         .filter(|name| name.ends_with('A'))
-        .copied()
-        .collect::<HashSet<_>>();
-    let end_positions = map
-        .keys()
-        .filter(|name| name.ends_with('Z'))
-        .copied()
-        .collect::<HashSet<_>>();
-
-    let mut current_positions = starting_positions;
-    let mut count = 0;
-    while current_positions != end_positions {
-        for instruction in &instructions {
-            count += 1;
-
-            current_positions = current_positions
-                .drain()
-                .map(|current_position| match instruction {
-                    Instruction::R => map[current_position].1,
-                    Instruction::L => map[current_position].0,
-                })
-                .collect();
-
-            if current_positions == end_positions {
-                break;
-            }
-        }
-    }
-    count
+        .map(|start| resolve_instructions(start, &map, &instructions))
+        .reduce(lcm)
+        .unwrap()
 }
