@@ -1,0 +1,15 @@
+[package]
+name = "y2019d22"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "y2019d22"
+path = "src/22.rs"
+
+[dependencies]
+aoclib = "0.2.1"
+nom = "5.0.1"
+
+[lints]
+workspace = true

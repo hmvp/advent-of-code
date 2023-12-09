@@ -1,0 +1,16 @@
+[package]
+name = "y2019d09"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "y2019d09"
+path = "src/09.rs"
+
+[dependencies]
+aoclib = "0.2.1"
+crossbeam-channel = "0.4"
+compute = {path = "../compute"}
+
+[lints]
+workspace = true
