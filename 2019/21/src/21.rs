@@ -46,7 +46,7 @@ WALK
                     break;
                 }
 
-                print!("{}", tile as u8 as char);
+                print!("{}", u8::try_from(tile).unwrap() as char);
             } else {
                 drop(input_sender);
                 break;
@@ -97,7 +97,7 @@ RUN
                     break;
                 }
 
-                print!("{}", tile as u8 as char);
+                print!("{}", u8::try_from(tile).unwrap() as char);
             } else {
                 drop(input_sender);
                 break;

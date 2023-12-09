@@ -111,9 +111,9 @@ fn parse_input(input: &str) -> Vec<(usize, [usize; 60])> {
             println!("{observation:?}");
         }
 
-        for min in 0..60 {
-            if !observation.minutes_awake[min] {
-                minutes[min] += 1;
+        for (index, min) in minutes.iter_mut().enumerate() {
+            if !observation.minutes_awake[index] {
+                *min += 1;
             }
         }
     }

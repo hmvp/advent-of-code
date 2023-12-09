@@ -3,7 +3,7 @@ use std::iter::repeat;
 aoc::parts!(1, 2);
 
 pub fn input_generator(input: &str) -> Vec<u8> {
-    input.chars().map(|c| c.to_digit(10).unwrap() as u8).collect()
+    input.chars().map(|c| u8::try_from(c.to_digit(10).unwrap()).unwrap()).collect()
 }
 
 const BASE_PATTERN: [isize; 4] = [0, 1, 0, -1];
@@ -19,14 +19,13 @@ pub fn make_pattern(nr: usize) -> impl Iterator<Item = isize> {
 pub fn calc_list(input: &[u8]) -> Vec<u8> {
     (1..=input.len())
         .map(|n| {
-            (input
+            u8::try_from(input
                 .iter()
                 .skip(n - 1)
                 .zip(make_pattern(n))
                 .map(|(a, b)| *a as isize * b)
-                .sum::<isize>()
-                .abs() as usize
-                % 10) as u8
+                .sum::<isize>().unsigned_abs()
+                % 10).unwrap()
         })
         .collect()
 }
@@ -67,7 +66,7 @@ fn part_2(input: aoc::Input) -> impl ToString {
 mod tests {
     use super::calc_list;
     use super::fft;
-    use super::input_generator;
+    // use super::input_generator;
 
     #[test]
     fn check_calc_list() {

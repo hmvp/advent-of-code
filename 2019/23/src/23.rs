@@ -88,7 +88,7 @@ fn part_2(input: aoc::Input) -> impl ToString {
                 nics[0].input.send(y).unwrap();
             }
 
-            for nic in nics.iter() {
+            for nic in &nics {
                 let target = nic.output.try_recv();
                 let x = nic.output.try_recv();
                 let y = nic.output.try_recv();

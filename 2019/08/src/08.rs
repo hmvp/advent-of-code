@@ -3,7 +3,7 @@ use bytecount::count;
 aoc::parts!(1, 2);
 
 pub fn input_generator(input: &str) -> Vec<u8> {
-    input.chars().map(|c| c.to_digit(10).unwrap() as u8).collect()
+    input.chars().map(|c| u8::try_from(c.to_digit(10).unwrap()).unwrap()).collect()
 }
 
 fn part_1(input: aoc::Input) -> impl ToString {

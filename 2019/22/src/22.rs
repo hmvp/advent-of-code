@@ -27,7 +27,7 @@ impl Deal {
                 temp.clone_from_slice(stack);
                 for (n, x) in temp.drain(..).enumerate() {
                     let pos = n * i % stack.len();
-                    stack[pos] = x
+                    stack[pos] = x;
                 }
             }
         }
@@ -60,7 +60,7 @@ pub fn input_generator(input: &str) -> Vec<Deal> {
 
 pub fn shuffle(input: &[Deal], cards: &mut [usize]) {
     for deal in input {
-        deal.execute(cards)
+        deal.execute(cards);
     }
 }
 

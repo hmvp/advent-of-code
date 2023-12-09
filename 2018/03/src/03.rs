@@ -15,40 +15,40 @@ mod parser {
     use std::str::FromStr;
 
     use super::Claim;
-    use nom::{digit, do_parse, map_res, named, non_empty, tag};
-
-    fn from_dec(input: &str) -> Result<usize, std::num::ParseIntError> {
-        input.parse::<usize>()
-    }
-
-    named!(number<&str, usize>,
-        map_res!(digit, from_dec)
-    );
-
-    named!(claim<&str, Claim>,
-        do_parse!(
-            tag!("#")   >>
-            id:   number >>
-            tag!(" @ ")   >>
-            x: number >>
-            tag!(",")   >>
-            y:  number >>
-            tag!(": ")   >>
-            width:  number >>
-            tag!("x")   >>
-            height:  map_res!(non_empty, from_dec) >>
-            (Claim { id, x, y, width, height })
-        )
-    );
+    use nom::bytes::complete::tag;
+    use nom::character::complete::digit1;
+    use nom::combinator::map;
+    use nom::sequence::{preceded, separated_pair};
 
     impl FromStr for Claim {
         type Err = String;
 
         fn from_str(s: &str) -> Result<Self, Self::Err> {
-            match claim(s) {
-                Ok(value) => Ok(value.1),
-                Err(e) => Err(format!("Failed on \"{s}\": {e}")),
-            }
+            let parse_point = separated_pair(
+                map(digit1::<&str, ()>, |s: &str| s.parse().unwrap()),
+                tag(","),
+                map(digit1::<&str, ()>, |s: &str| s.parse().unwrap()),
+            );
+            let parse_area = separated_pair(
+                map(digit1::<&str, ()>, |s: &str| s.parse().unwrap()),
+                tag("x"),
+                map(digit1::<&str, ()>, |s: &str| s.parse().unwrap()),
+            );
+
+            let mut parse_claim = separated_pair(
+                preceded(tag("#"), map(digit1::<&str, ()>, |s: &str| s.parse().unwrap())),
+                tag(" @ "),
+                separated_pair(parse_point, tag(": "), parse_area),
+            );
+
+            let (id, ((x, y), (width, height))) = parse_claim(s).unwrap().1;
+            Ok(Claim {
+                id,
+                x,
+                y,
+                width,
+                height,
+            })
         }
     }
 }
@@ -60,7 +60,7 @@ fn parse_input(input: &str) -> Vec<Claim> {
 fn part_1(input: aoc::Input) -> impl ToString {
     let claims = &parse_input(input.raw());
 
-    let mut fabric = [[0usize; 1000]; 1000];
+    let mut fabric = vec![[0usize; 1000]; 1000];
 
     for claim in claims {
         for row in fabric.iter_mut().skip(claim.x).take(claim.width) {

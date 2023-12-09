@@ -1,5 +1,5 @@
 use std::collections::HashSet;
-use std::collections::LinkedList;
+use std::collections::VecDeque;
 use std::iter::FromIterator;
 
 aoc::parts!(1);
@@ -15,13 +15,13 @@ pub struct Map {
 impl std::fmt::Debug for Map {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> Result<(), std::fmt::Error> {
         let mut result = Ok(());
-        result = result.and_then(|_| writeln!(f));
+        result = result.and_then(|()| writeln!(f));
         for y in 0..HEIGHT {
             let offset = y * WIDTH;
             for x in 0..WIDTH {
-                result = result.and_then(|_| write!(f, "{}", if self.grid[offset + x] { "#" } else { "." }));
+                result = result.and_then(|()| write!(f, "{}", if self.grid[offset + x] { "#" } else { "." }));
             }
-            result = result.and_then(|_| writeln!(f));
+            result = result.and_then(|()| writeln!(f));
         }
         result
     }
@@ -57,14 +57,14 @@ impl Map {
     }
 
     fn get_cell_state(&self, x: usize, y: usize) -> bool {
-        self.grid[(y * WIDTH + x)]
+        self.grid[y * WIDTH + x]
     }
 
     pub fn biodiversity(&self) -> usize {
         self.grid
             .iter()
             .enumerate()
-            .map(|(i, &x)| if x { 2usize.pow(i as u32) } else { 0 })
+            .map(|(i, &x)| if x { 2usize.pow(u32::try_from(i).unwrap()) } else { 0 })
             .sum()
     }
 }
@@ -93,7 +93,7 @@ fn part_1(input: aoc::Input) -> impl ToString {
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct RecursiveMap {
-    grids: LinkedList<Map>,
+    grids: VecDeque<Map>,
 }
 
 impl Default for Map {
@@ -107,7 +107,7 @@ impl Default for Map {
 impl RecursiveMap {
     pub fn from(map: Map) -> Self {
         Self {
-            grids: LinkedList::from_iter(Some(map)),
+            grids: VecDeque::from_iter(Some(map)),
         }
     }
 
@@ -136,7 +136,7 @@ impl RecursiveMap {
 
         //             match (
         //                 grid.get_cell_state(x, y),
-        //                 self.neighbors_alive(&prev, &grid, &next, x, y),
+        //                 neighbors_alive(&prev, &grid, &next, x, y),
         //             ) {
         //                 (true, 1) => grid.grid[offset + x] = true,
         //                 (true, _) => grid.grid[offset + x] = false,
@@ -152,7 +152,7 @@ impl RecursiveMap {
         Self { grids }
     }
 
-    fn neighbors_alive(&self, prev: &Map, this: &Map, next: &Map, x: usize, y: usize) -> usize {
+    fn neighbors_alive(prev: &Map, this: &Map, _next: &Map, x: usize, y: usize) -> usize {
         let x = x as isize;
         let y = y as isize;
 
@@ -253,11 +253,11 @@ mod tests {
              ..#..
              #....",
         );
-        assert_eq!(map.get_cell_state(0, 0), false);
-        assert_eq!(map.get_cell_state(1, 0), false);
-        assert_eq!(map.get_cell_state(0, 1), true);
-        assert_eq!(map.get_cell_state(4, 1), false);
-        assert_eq!(map.get_cell_state(4, 2), true);
+        assert!(!map.get_cell_state(0, 0));
+        assert!(!map.get_cell_state(1, 0));
+        assert!(map.get_cell_state(0, 1));
+        assert!(!map.get_cell_state(4, 1));
+        assert!(map.get_cell_state(4, 2));
     }
     #[test]
     fn check_biodiversity() {

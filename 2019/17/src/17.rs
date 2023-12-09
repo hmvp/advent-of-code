@@ -39,7 +39,7 @@ fn part_1(input: aoc::Input) -> impl ToString {
                         y += 1;
                     }
                     tile => {
-                        grid.insert((x, y), tile as u8 as char);
+                        grid.insert((x, y), u8::try_from(tile).unwrap() as char);
                         x += 1;
                     }
                 }
@@ -104,7 +104,7 @@ fn part_2(input: aoc::Input) -> impl ToString {
                         y += 1;
                     }
                     tile => {
-                        grid.insert((x, y), tile as u8 as char);
+                        grid.insert((x, y), u8::try_from(tile).unwrap() as char);
                         x += 1;
                     }
                 }

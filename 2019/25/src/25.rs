@@ -26,7 +26,7 @@ fn part_1(input: aoc::Input) -> impl ToString {
         loop {
             print!(
                 "{}",
-                output_receiver.try_iter().map(|i| i as u8 as char).collect::<String>()
+                output_receiver.try_iter().map(|i| u8::try_from(i).unwrap() as char).collect::<String>()
             );
             stdin.read_to_string(&mut input_string).unwrap();
 
